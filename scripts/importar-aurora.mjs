@@ -460,26 +460,35 @@ function normalizar(produto, marca, marcaId) {
 
 async function pagina(marca, page) {
   const url = `${ORIGIN}/c/auroraatacado/carregar_produtos/${page}/${marca.id}/${PHONE}?mobile=0`
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      "User-Agent": "SemelleCatalogo/1.0",
-      Origin: ORIGIN,
-      Referer: `${ORIGIN}/c/auroraatacado/categoria/${marca.id}/${PHONE}`,
-    },
-    body: JSON.stringify({ pagina_especifica: "categoria" }),
-  })
-  const text = await response.text()
-  if (!response.ok) {
-    throw new Error(`${marca.marca} página ${page}: HTTP ${response.status} ${text.slice(0, 180)}`)
+  let ultimoErro = new Error(`${marca.marca} página ${page}: sem resposta`)
+  for (let tentativa = 1; tentativa <= 5; tentativa += 1) {
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "User-Agent": "SemelleCatalogo/1.0",
+          Origin: ORIGIN,
+          Referer: `${ORIGIN}/c/auroraatacado/categoria/${marca.id}/${PHONE}`,
+        },
+        body: JSON.stringify({ pagina_especifica: "categoria" }),
+      })
+      const text = await response.text()
+      if (response.status === 429 || response.status >= 500) {
+        ultimoErro = new Error(`${marca.marca} página ${page}: HTTP ${response.status}`)
+      } else if (!response.ok) {
+        throw new Error(`${marca.marca} página ${page}: HTTP ${response.status} ${text.slice(0, 180)}`)
+      } else {
+        return JSON.parse(text)
+      }
+    } catch (error) {
+      if (String(error.message || "").includes("HTTP 4")) throw error
+      ultimoErro = error
+    }
+    await new Promise((resolve) => setTimeout(resolve, 800 * tentativa))
   }
-  try {
-    return JSON.parse(text)
-  } catch {
-    throw new Error(`${marca.marca} página ${page}: resposta não é JSON ${text.slice(0, 180)}`)
-  }
+  throw ultimoErro
 }
 
 function produtosDaResposta(data) {
