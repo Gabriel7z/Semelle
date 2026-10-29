@@ -289,7 +289,7 @@ export function CheckoutForm() {
                   {line.colorName} · nº {line.size} · {line.qty}x
                 </p>
               </div>
-              <p>{formatBRL(line.price * line.qty)}</p>
+              <p className="shrink-0">{formatBRL(line.price * line.qty)}</p>
             </li>
           ))}
         </ul>

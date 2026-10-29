@@ -1,11 +1,13 @@
 "use client"
 
-import { useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { ProductCard } from "@/components/product-card"
 import { categories, type CategoryId } from "@/data/catalog"
 import { brands, products } from "@/lib/loja"
 import { cn } from "cn"
+
+const pageSize = 24
 
 const sorts = [
   { id: "destaque", label: "Destaques" },
@@ -49,7 +51,14 @@ export function Catalog() {
     router.push(qs ? `/produtos?${qs}` : "/produtos")
   }
 
+  const [shown, setShown] = useState(pageSize)
+
+  useEffect(() => {
+    setShown(pageSize)
+  }, [category, brand, sort, query])
+
   const activeCategory = categories.find((item) => item.id === category)
+  const page = visible.slice(0, shown)
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
@@ -68,7 +77,7 @@ export function Catalog() {
       </div>
 
       <div className="mt-8 flex flex-col gap-4 border-y border-border py-4">
-        <div className="flex flex-wrap gap-2">
+        <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
           <FilterChip active={!category} onClick={() => update("categoria", null)}>
             Tudo
           </FilterChip>
@@ -99,7 +108,7 @@ export function Catalog() {
           <select
             value={sort}
             onChange={(event) => update("ordem", event.target.value)}
-            className="h-9 border border-input bg-background px-2 text-foreground"
+            className="h-11 border border-input bg-background px-2 text-base text-foreground sm:h-9 sm:text-sm"
           >
             {sorts.map((item) => (
               <option key={item.id} value={item.id}>
@@ -122,11 +131,27 @@ export function Catalog() {
           </button>
         </div>
       ) : (
-        <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-3">
-          {visible.map((product) => (
-            <ProductCard key={product.slug} product={product} />
-          ))}
-        </div>
+        <>
+          <div className="mt-8 grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-4 sm:gap-y-10 lg:grid-cols-3">
+            {page.map((product) => (
+              <ProductCard key={product.slug} product={product} />
+            ))}
+          </div>
+          {shown < visible.length ? (
+            <div className="mt-10 flex flex-col items-center gap-3">
+              <p className="text-sm text-muted-foreground">
+                {shown} de {visible.length} pares
+              </p>
+              <button
+                type="button"
+                className="h-11 border border-primary px-6 text-sm"
+                onClick={() => setShown((count) => count + pageSize)}
+              >
+                Ver mais
+              </button>
+            </div>
+          ) : null}
+        </>
       )}
     </div>
   )
@@ -146,7 +171,7 @@ function FilterChip({
       type="button"
       onClick={onClick}
       className={cn(
-        "h-8 border px-3 text-xs tracking-wide uppercase",
+        "h-11 shrink-0 border px-3 text-xs tracking-wide uppercase sm:h-8",
         active
           ? "border-primary bg-primary text-primary-foreground"
           : "border-border bg-background hover:border-primary",

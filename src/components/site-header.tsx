@@ -82,10 +82,10 @@ export function SiteHeader() {
           </a>
         </div>
         <Link href="/" className="justify-self-center text-center">
-          <span className="block text-[0.58rem] tracking-[0.32em] text-primary/70 uppercase">
+          <span className="block text-[0.58rem] tracking-[0.16em] text-primary/70 uppercase sm:tracking-[0.32em]">
             {store.tagline}
           </span>
-          <span className="block text-[1.65rem] leading-none font-extrabold tracking-tight text-primary italic">
+          <span className="block text-[1.35rem] leading-none font-extrabold tracking-tight text-primary italic sm:text-[1.65rem]">
             semelle
           </span>
         </Link>
@@ -127,26 +127,31 @@ export function SiteHeader() {
       </nav>
 
       <Sheet open={menu} onOpenChange={setMenu}>
-        <SheetContent side="left" className="w-full sm:max-w-xs">
+        <SheetContent side="left" className="w-full overflow-y-auto sm:max-w-xs">
           <SheetHeader>
             <SheetTitle className="font-heading text-2xl italic">semelle</SheetTitle>
           </SheetHeader>
-          <nav className="flex flex-col gap-1 px-4">
-            {links.map((link) => (
+          <nav className="flex flex-col gap-1 px-4 pb-8">
+            <Link href="/produtos" onClick={() => setMenu(false)} className="border-b border-border py-3 text-lg">
+              Coleção
+            </Link>
+            {categories.map((category) => (
               <Link
-                key={link.href}
-                href={link.href}
+                key={category.id}
+                href={`/produtos?categoria=${category.id}`}
                 onClick={() => setMenu(false)}
                 className="border-b border-border py-3 text-lg"
               >
-                {link.label}
+                {category.name}
               </Link>
             ))}
-            <Link
-              href="/trocas"
-              onClick={() => setMenu(false)}
-              className="border-b border-border py-3 text-lg"
-            >
+            <Link href="/sobre" onClick={() => setMenu(false)} className="border-b border-border py-3 text-lg">
+              A loja
+            </Link>
+            <Link href="/contato" onClick={() => setMenu(false)} className="border-b border-border py-3 text-lg">
+              Contato
+            </Link>
+            <Link href="/trocas" onClick={() => setMenu(false)} className="border-b border-border py-3 text-lg">
               Trocas
             </Link>
           </nav>
@@ -154,7 +159,7 @@ export function SiteHeader() {
       </Sheet>
 
       <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Buscar um par</DialogTitle>
           </DialogHeader>

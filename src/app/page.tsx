@@ -45,7 +45,7 @@ export default function HomePage() {
             <p className="text-[0.68rem] tracking-[0.24em] text-muted-foreground uppercase">
               {store.city} · calçados femininos
             </p>
-            <h1 className="font-heading mt-4 text-5xl leading-[0.95] text-primary sm:text-6xl">
+            <h1 className="font-heading mt-4 text-4xl leading-[0.95] text-primary sm:text-6xl">
               O par perfeito para cada passo.
             </h1>
             <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
@@ -67,7 +67,7 @@ export default function HomePage() {
                 Instagram
               </a>
             </div>
-            <dl className="mt-12 grid grid-cols-3 gap-4 border-t border-border pt-6 text-sm">
+            <dl className="mt-12 grid grid-cols-3 gap-2 border-t border-border pt-6 text-xs sm:gap-4 sm:text-sm">
               <div>
                 <dt className="text-muted-foreground">Origem</dt>
                 <dd className="mt-1 font-medium">Brasília</dd>
@@ -82,7 +82,7 @@ export default function HomePage() {
               </div>
             </dl>
           </div>
-          <div className="relative min-h-[440px] bg-[#efe8dc]">
+          <div className="relative order-first min-h-[72vw] bg-[#efe8dc] sm:min-h-[440px] lg:order-none">
             <Image
               src={hero}
               alt={quote ? `${quote.name} ${quote.brand}` : "Coleção Semelle"}
@@ -111,7 +111,7 @@ export default function HomePage() {
         <div className="flex items-end justify-between gap-4">
           <h2 className="font-heading text-4xl text-primary">Por onde começar</h2>
         </div>
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3">
           {vitrine.map((category) => (
             <Link key={category.id} href={`/produtos?categoria=${category.id}`} className="group">
               <div className="relative aspect-[4/5] overflow-hidden bg-[#efe8dc]">

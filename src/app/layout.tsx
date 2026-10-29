@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Fraunces, Outfit } from "next/font/google"
 import { ThemeProvider } from "next-themes"
 import { CartSheet } from "@/components/cart-sheet"
@@ -18,6 +18,12 @@ const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-fraunces",
 })
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+}
 
 export const metadata: Metadata = {
   title: {
@@ -42,7 +48,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body className={`${outfit.variable} ${fraunces.variable} antialiased`}>
+      <body className={`${outfit.variable} ${fraunces.variable} overflow-x-clip antialiased`}>
         <ThemeProvider forcedTheme="light" attribute="class" disableTransitionOnChange>
           <CartProvider>
             <div className="flex min-h-screen flex-col">

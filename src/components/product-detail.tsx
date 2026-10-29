@@ -109,7 +109,7 @@ export function ProductDetail({ product }: { product: Product }) {
   }
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-8 px-4 py-8 pb-28 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:pb-8">
+    <div className="mx-auto grid max-w-6xl gap-8 px-4 py-8 pb-32 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:pb-8">
       <div>
         <div className="relative aspect-square overflow-hidden bg-[#efe8dc]">
           {activePhoto ? (
@@ -144,7 +144,7 @@ export function ProductDetail({ product }: { product: Product }) {
       </div>
 
       <div>
-        <p className="text-[0.68rem] tracking-[0.2em] text-muted-foreground uppercase">
+        <p className="text-[0.68rem] tracking-[0.16em] break-words text-muted-foreground uppercase sm:tracking-[0.2em]">
           <Link href={`/produtos?categoria=${product.category}`} className="hover:text-primary">
             {product.category}
           </Link>
@@ -152,7 +152,7 @@ export function ProductDetail({ product }: { product: Product }) {
           {product.brand}
           {product.reference ? ` · ref. ${product.reference}` : ""}
         </p>
-        <h1 className="font-heading mt-2 text-4xl text-primary sm:text-5xl">
+        <h1 className="font-heading mt-2 text-3xl break-words text-primary sm:text-5xl">
           {product.name}
         </h1>
         <p className="mt-4 font-heading text-3xl">{formatBRL(product.price)}</p>
@@ -225,7 +225,7 @@ export function ProductDetail({ product }: { product: Product }) {
               </DialogContent>
             </Dialog>
           </div>
-          <div className="mt-2 grid grid-cols-7 gap-1.5">
+          <div className="mt-2 grid grid-cols-4 gap-2 sm:grid-cols-7">
             {shoeSizes.map((item) => {
               const left = color ? unitsLeft(product, color.id, item) : 0
               const selected = size === item
@@ -239,7 +239,7 @@ export function ProductDetail({ product }: { product: Product }) {
                     setQty(1)
                   }}
                   className={cn(
-                    "h-10 border text-sm",
+                    "h-11 border text-sm",
                     selected && "border-primary bg-primary text-primary-foreground",
                     !selected && left === 0 && "text-muted-foreground line-through",
                     !selected && left > 0 && "border-border hover:border-primary",
@@ -349,14 +349,37 @@ export function ProductDetail({ product }: { product: Product }) {
       </div>
 
       {!open && !(size && available === 0) ? (
-        <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-border bg-background/95 px-4 py-3 backdrop-blur lg:hidden">
-          <div className="min-w-0">
-            <p className="truncate text-xs text-muted-foreground">{product.brand}</p>
-            <p className="font-medium">{formatBRL(product.price)}</p>
+        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur lg:hidden">
+          <div className="mx-auto flex max-w-6xl items-center gap-2">
+            <div className="min-w-0">
+              <p className="truncate text-xs text-muted-foreground">{product.brand}</p>
+              <p className="font-medium">{formatBRL(product.price)}</p>
+            </div>
+            <div className="ml-auto flex h-11 items-center border border-border">
+              <button
+                type="button"
+                className="w-10"
+                aria-label="Diminuir"
+                onClick={() => setQty((value) => Math.max(1, value - 1))}
+              >
+                −
+              </button>
+              <span className="w-6 text-center text-sm">{qty}</span>
+              <button
+                type="button"
+                className="w-10"
+                aria-label="Aumentar"
+                onClick={() =>
+                  setQty((value) => Math.min(available && available > 0 ? available : 3, value + 1))
+                }
+              >
+                +
+              </button>
+            </div>
+            <Button className="h-11 px-4" onClick={addToBag}>
+              Adicionar
+            </Button>
           </div>
-          <Button className="ml-auto h-11 px-5" onClick={addToBag}>
-            Adicionar
-          </Button>
         </div>
       ) : null}
     </div>

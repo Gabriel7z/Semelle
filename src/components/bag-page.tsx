@@ -34,28 +34,32 @@ export function BagPage() {
       <h1 className="font-heading text-4xl text-primary">Sacola</h1>
       <ul className="mt-8 divide-y divide-border border-y border-border">
         {lines.map((line) => (
-          <li key={line.key} className="flex gap-4 py-4">
-            <Link href={`/produtos/${line.slug}`} className="relative size-24 shrink-0 overflow-hidden bg-[#efe8dc]">
+          <li key={line.key} className="flex gap-3 py-4">
+            <Link href={`/produtos/${line.slug}`} className="relative size-20 shrink-0 overflow-hidden bg-[#efe8dc] sm:size-24">
               <Image src={line.image} alt="" fill sizes="96px" className="object-cover" />
             </Link>
             <div className="min-w-0 flex-1">
-              <p className="text-[0.68rem] tracking-[0.14em] text-muted-foreground uppercase">{line.brand}</p>
-              <p className="font-heading text-2xl leading-tight">{line.name}</p>
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-[0.68rem] tracking-[0.14em] text-muted-foreground uppercase">{line.brand}</p>
+                  <p className="font-heading text-xl leading-tight sm:text-2xl">{line.name}</p>
+                </div>
+                <p className="shrink-0 text-sm">{formatBRL(line.price * line.qty)}</p>
+              </div>
               <p className="text-sm text-muted-foreground">
                 {line.colorName} · nº {line.size}
               </p>
               <div className="mt-3 flex items-center gap-3">
-                <div className="flex h-9 items-center border border-border">
-                  <button type="button" className="w-8" aria-label="Diminuir" onClick={() => setQty(line.key, line.qty - 1)}>−</button>
+                <div className="flex h-11 items-center border border-border">
+                  <button type="button" className="w-11" aria-label="Diminuir" onClick={() => setQty(line.key, line.qty - 1)}>−</button>
                   <span className="w-6 text-center text-sm">{line.qty}</span>
-                  <button type="button" className="w-8" aria-label="Aumentar" onClick={() => setQty(line.key, line.qty + 1)}>+</button>
+                  <button type="button" className="w-11" aria-label="Aumentar" onClick={() => setQty(line.key, line.qty + 1)}>+</button>
                 </div>
                 <button type="button" className="text-xs underline" onClick={() => remove(line.key)}>
                   Remover
                 </button>
               </div>
             </div>
-            <p className="text-sm">{formatBRL(line.price * line.qty)}</p>
           </li>
         ))}
       </ul>

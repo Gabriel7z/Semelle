@@ -26,14 +26,14 @@ export function ProductCard({ product }: { product: Product }) {
         ) : null}
       </div>
       <div className="pt-3">
-        <p className="text-[0.68rem] tracking-[0.18em] text-muted-foreground uppercase">
+        <p className="truncate text-[0.68rem] tracking-[0.14em] text-muted-foreground uppercase sm:tracking-[0.18em]">
           {product.brand} · {categoryName(product.category)}
         </p>
-        <div className="mt-1 flex items-start justify-between gap-3">
-          <h3 className="font-heading text-xl leading-tight text-primary group-hover:underline">
+        <div className="mt-1 flex flex-col gap-1">
+          <h3 className="line-clamp-2 font-heading text-lg leading-tight text-primary group-hover:underline sm:text-xl">
             {product.name}
           </h3>
-          <p className="shrink-0 text-sm">{formatBRL(product.price)}</p>
+          <p className="text-sm">{formatBRL(product.price)}</p>
         </div>
         <div className="mt-2 flex gap-1.5">
           {product.colors.map((color) => (
