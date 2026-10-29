@@ -7,11 +7,17 @@ import { products } from "@/lib/loja"
 import { formatBRL } from "@/lib/format"
 import { cn } from "cn"
 
+function resumo(texto: string) {
+  const limpo = texto.replace(/\s+/g, " ").trim()
+  if (limpo.length <= 220) return limpo
+  return `${limpo.slice(0, 220).replace(/\s+\S*$/, "").replace(/[.,;:\s]+$/, "")}.`
+}
+
 const steps = [
   {
     n: "01",
     title: "Escolha cor e número",
-    text: "A vitrine é a coleção do Instagram. Cada par mostra o que está disponível.",
+    text: "A vitrine é a coleção da Semelle. Cada par mostra cor, número e o que está disponível.",
   },
   {
     n: "02",
@@ -26,8 +32,10 @@ const steps = [
 ]
 
 export default function HomePage() {
-  const featured = products.filter((product) => product.featured)
-  const quote = products[0]
+  const featured = products.filter((product) => product.featured).slice(0, 6)
+  const quote = featured[0] ?? products[0]
+  const hero = quote?.colors[0]?.images[0] ?? "/products/rasteira-flor.jpg"
+  const vitrine = categories.slice(0, 6)
 
   return (
     <div>
@@ -76,8 +84,8 @@ export default function HomePage() {
           </div>
           <div className="relative min-h-[440px] bg-[#efe8dc]">
             <Image
-              src="/products/rasteira-flor.jpg"
-              alt="Rasteira dourada com flor de ráfia e amarração no tornozelo"
+              src={hero}
+              alt={quote ? `${quote.name} ${quote.brand}` : "Coleção Semelle"}
               fill
               priority
               sizes="(min-width: 1024px) 50vw, 100vw"
@@ -91,7 +99,7 @@ export default function HomePage() {
         <div className="semelle-marquee flex w-max gap-8 text-[0.72rem] tracking-[0.22em] text-muted-foreground uppercase">
           {Array.from({ length: 2 }).map((_, copy) => (
             <p key={copy} className="flex gap-8">
-              {["Vizzano", "Beira Rio", "Semelle", "Brasília", "O par perfeito"].map((item) => (
+              {["Vizzano", "Beira Rio", "Modare", "Moleca", "Semelle", "Brasília"].map((item) => (
                 <span key={`${copy}-${item}`}>{item}</span>
               ))}
             </p>
@@ -104,7 +112,7 @@ export default function HomePage() {
           <h2 className="font-heading text-4xl text-primary">Por onde começar</h2>
         </div>
         <div className="mt-8 grid gap-4 md:grid-cols-3">
-          {categories.map((category) => (
+          {vitrine.map((category) => (
             <Link key={category.id} href={`/produtos?categoria=${category.id}`} className="group">
               <div className="relative aspect-[4/5] overflow-hidden bg-[#efe8dc]">
                 <Image
@@ -126,8 +134,8 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 py-14 sm:px-6 md:grid-cols-[1fr_1.1fr]">
           <div className="relative aspect-square overflow-hidden bg-[#efe8dc]">
             <Image
-              src="/products/scarpin-offwhite.jpg"
-              alt="Scarpin slingback off white Vizzano"
+              src={hero}
+              alt={quote ? `${quote.name} ${quote.brand}` : "Coleção Semelle"}
               fill
               sizes="(min-width: 768px) 40vw, 100vw"
               className="object-cover"
@@ -138,10 +146,11 @@ export default function HomePage() {
               Da vitrine
             </p>
             <blockquote className="font-heading mt-3 text-3xl leading-snug text-primary sm:text-4xl">
-              “{quote?.caption}”
+              “{quote?.name}”
             </blockquote>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
-              A Semelle monta a coleção em {store.city}. O que está aqui é o que aparece no {store.handle}: Vizzano, Beira Rio e as seleções com flor, strass e ornamento.
+              {quote?.description ? `${resumo(quote.description)} ` : null}
+              A Semelle monta a coleção em {store.city}: Vizzano, Beira Rio, Modare, Moleca e a linha Aurora.
             </p>
             <Link href="/sobre" className="mt-6 inline-block text-sm underline underline-offset-4">
               Conhecer a loja

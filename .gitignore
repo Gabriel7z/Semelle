@@ -18,8 +18,9 @@
 /.next/
 /out/
 
-# JSON do fornecedor, gerado por scripts/gerar-api.ts
+# JSON do fornecedor e vitrine sem custo, gerados por scripts/gerar-api.ts
 /public/api/
+/src/data/vitrine.json
 
 # production
 /build

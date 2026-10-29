@@ -1,6 +1,6 @@
 # Semelle Calçados
 
-Loja da [Semelle](https://www.instagram.com/usesemelle/) — calçados femininos em Brasília. A vitrine segue o Instagram **@usesemelle**: scarpin slingback, rasteira de strass, papetes Vizzano e Beira Rio, papete com ornamento e rasteira de flor.
+Loja da [Semelle](https://www.instagram.com/usesemelle/) — calçados femininos em Brasília. A vitrine reúne papetes, rasteiras, saltos, tênis e botas das linhas Vizzano, Beira Rio, Modare, Moleca, Activitta e Aurora.
 
 O pedido é reservado no site. A confirmação de estoque e o PIX acontecem no Instagram. Nenhum cartão é cobrado aqui.
 
@@ -17,18 +17,18 @@ A loja publicada fica em [https://gabriel7z.github.io/Semelle/](https://gabriel7
 
 ## Fornecedor e margem
 
-O arquivo `src/data/catalog.ts` é o catálogo do fornecedor. O campo `cost` é o preço de custo, em centavos (`13990` = R$ 139,90).
+Os anúncios vêm do catálogo público da [Aurora Calçados](https://auroracalcados.com.br/), o atacado em Novo Gama. `node scripts/importar-aurora.mjs` grava `src/data/aurora.json`. O campo `cost` é o preço de custo, em centavos.
 
-A loja lê esses anúncios e aplica a margem de `src/lib/margem.ts` (`MARGEM = 0.5`, ou seja, 50% em cima do custo). A rasteira de R$ 139,90 no fornecedor aparece na vitrine por R$ 209,85.
+A loja aplica a margem de `src/lib/margem.ts` (`MARGEM = 0.5`, ou seja, 50% em cima do custo). Um par de R$ 89,90 no fornecedor aparece na vitrine por R$ 134,85. O build grava essa vitrine em `src/data/vitrine.json`, já com o preço de venda e sem o custo.
 
-O mesmo catálogo sai como JSON. O build grava os arquivos em `public/api/fornecedor` (`npm run api`). No GitHub Pages:
+O mesmo catálogo sai como JSON, com o custo, sem a margem. O build grava os arquivos em `public/api/fornecedor` (`npm run api`). No GitHub Pages:
 
 ```bash
 curl https://gabriel7z.github.io/Semelle/api/fornecedor/produtos.json
-curl https://gabriel7z.github.io/Semelle/api/fornecedor/produtos/rasteira-brilho-h.json
+curl https://gabriel7z.github.io/Semelle/api/fornecedor/produtos/flat-bloom-nude-aurora-3483111.json
 ```
 
-A resposta traz o custo do fornecedor, sem a margem. Quem consome a API aplica o próprio ganho. Esta loja faz isso em `src/lib/loja.ts`.
+A resposta traz o custo do fornecedor, sem a margem.
 
 Frete:
 
@@ -36,7 +36,7 @@ Frete:
 - Restante do Brasil: R$ 27,90
 - Retirada em Brasília: combinada pelo Instagram
 
-As fotos estão em `public/products` e vieram das publicações públicas do perfil.
+As fotos dos anúncios são as do catálogo da Aurora.
 
 ## Pedidos
 

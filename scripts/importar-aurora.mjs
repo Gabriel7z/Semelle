@@ -266,27 +266,81 @@ function corPeloNome(nome, marca) {
   return "Única"
 }
 
+const ENTIDADES = {
+  ccedil: "ç",
+  Ccedil: "Ç",
+  atilde: "ã",
+  Atilde: "Ã",
+  otilde: "õ",
+  Otilde: "Õ",
+  aacute: "á",
+  Aacute: "Á",
+  eacute: "é",
+  Eacute: "É",
+  iacute: "í",
+  Iacute: "Í",
+  oacute: "ó",
+  Oacute: "Ó",
+  uacute: "ú",
+  Uacute: "Ú",
+  agrave: "à",
+  Agrave: "À",
+  egrave: "è",
+  Egrave: "È",
+  acirc: "â",
+  Acirc: "Â",
+  ecirc: "ê",
+  Ecirc: "Ê",
+  ocirc: "ô",
+  Ocirc: "Ô",
+  amp: "&",
+  quot: '"',
+  apos: "'",
+  nbsp: " ",
+  bull: "•",
+  lt: "<",
+  gt: ">",
+}
+
+function decodificar(texto) {
+  return texto
+    .replace(/&#(\d+);/g, (_, codigo) => String.fromCodePoint(Number(codigo)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, codigo) => String.fromCodePoint(parseInt(codigo, 16)))
+    .replace(/&([a-z]+);/gi, (tudo, nome) => ENTIDADES[nome] ?? tudo)
+}
+
 function descricaoPublica(produto, reserva) {
-  const texto = textoLimpo(produto.descricao || produto.descricao_curta)
-    .replace(/\b(atacado|varejo)\s*:?\s*(r\$\s*)?[\d.,]+/gi, "")
+  return semPrecoDeAtacado(textoLimpo(produto.descricao || produto.descricao_curta)) || reserva
+}
+
+function semPrecoDeAtacado(texto) {
+  return texto
+    .replace(/[\u200B-\u200D\u2060\uFEFF\u00AD]/g, "")
+    .replace(/(?:r\$\s*)?\d{1,3}(?:\.\d{3})*,\d{2}\s*(?:[-–—]\s*)*(?:atacado|varejo)(?:\s+\w+)?/gi, " ")
+    .replace(/(?:atacado|varejo)(?:\s+(?:c?variado))?\s*(?:r\$\s*)?\d{1,3}(?:\.\d{3})*,\d{2}/gi, " ")
+    .replace(/atacado|varejo|cvariado|\bvariado\b:?/gi, " ")
+    .replace(/(?:r\$\s*)?\d{1,3}(?:\.\d{3})*,\d{2}/g, " ")
+    .replace(/\d{1,3},\d\s+\d{1,2}\b/g, " ")
     .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\uFE0F]/gu, "")
+    .replace(/\s+([,.;:])/g, "$1")
+    .replace(/(?:\s*[-–—]\s*){2,}/g, " ")
     .replace(/\s+/g, " ")
-    .trim()
-  return texto || reserva
+    .replace(/^[\s\-–—.,]+|[\s\-–—.,]+$/g, "")
 }
 
 function textoLimpo(valor) {
-  return String(valor || "")
+  return decodificar(String(valor || ""))
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
     .trim()
 }
 
 function normalizar(produto, marca, marcaId) {
-  const nome = textoLimpo(produto.nome || produto.titulo)
+  const nome = semPrecoDeAtacado(textoLimpo(produto.nome || produto.titulo))
   const custo = precoCusto(produto)
   const imagensProduto = urlsDe(produto.imagens)
   if (!nome || !custo || imagensProduto.length === 0) return null
+  if (/^\s*bolsa\b/i.test(nome)) return null
 
   const linha = linhaDo(produto, marcaId)
   if (PULAR.test(linha.name)) return null

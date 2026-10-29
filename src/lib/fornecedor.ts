@@ -1,14 +1,10 @@
-import {
-  products,
-  store,
-  type Product,
-} from "@/data/catalog"
+import bruto from "@/data/aurora.json"
 
 export type Anuncio = {
   slug: string
   nome: string
   marca: string
-  categoria: Product["category"]
+  categoria: string
   precoCentavos: number
   preco: number
   referencia: string | null
@@ -28,7 +24,27 @@ export type Anuncio = {
   instagram: string | null
 }
 
-function anuncio(product: Product, origin: string): Anuncio {
+type AnuncioBruto = {
+  slug: string
+  name: string
+  brand: string
+  category: string
+  cost: number
+  reference?: string | null
+  description: string
+  caption: string
+  details: string[]
+  sizes: string[]
+  colors: { id: string; name: string; swatch: string; images: string[] }[]
+  stock: Record<string, number>
+  featured?: boolean
+  badge?: string
+  instagram?: string
+}
+
+const produtos = (bruto as unknown as { products: AnuncioBruto[] }).products
+
+function anuncio(product: AnuncioBruto, origin: string): Anuncio {
   const absolutizar = (path: string) =>
     path.startsWith("http") ? path : `${origin}${path}`
 
@@ -60,13 +76,13 @@ function anuncio(product: Product, origin: string): Anuncio {
 export function catalogoFornecedor(origin = "") {
   return {
     fornecedor: {
-      nome: store.legalName,
-      cidade: `${store.city} — ${store.state}`,
-      repositorio: "https://github.com/Gabriel7z/Semelle",
-      instagram: store.instagram,
+      nome: "Aurora Calçados",
+      cidade: "Novo Gama — GO",
+      catalogo: "https://auroracalcados.com.br/",
+      instagram: "https://instagram.com/revendaaurora",
     },
     moeda: "BRL",
     precos: "custo do fornecedor, sem a margem da loja",
-    anuncios: products.map((product) => anuncio(product, origin)),
+    anuncios: produtos.map((product) => anuncio(product, origin)),
   }
 }

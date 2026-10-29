@@ -26,7 +26,7 @@ import { cn } from "cn"
 
 const links = [
   { href: "/produtos", label: "Coleção" },
-  ...categories.map((category) => ({
+  ...categories.slice(0, 4).map((category) => ({
     href: `/produtos?categoria=${category.id}`,
     label: category.name,
   })),
