@@ -16,7 +16,70 @@ const MARCAS = [
   { id: "200872", marca: "Vizzano" },
 ]
 
-const PULAR = /bolsa|meia|caixa|filtro/i
+const PULAR = /^(bolsas?|meias?)$/i
+
+/** Subcategorias do catálogo público, no id que a Aurora manda em `categorias`. */
+const SUB = {
+  423192: "Aurora Glam",
+  423258: "Flatforms",
+  423259: "Papetes",
+  423223: "Rasteiras",
+  423261: "Saltos",
+  423195: "Crocs",
+  423197: "Meias",
+  423199: "Slides",
+  423198: "Tênis",
+  423200: "Anabelas",
+  423202: "Botas",
+  423203: "Chinelos",
+  423206: "Flatforms",
+  423208: "Mules",
+  423209: "Papetes",
+  423205: "Rasteiras",
+  423210: "Saltos",
+  423212: "Tamancos",
+  423213: "Tênis",
+  428132: "Sapatilhas",
+  423220: "Chinelos",
+  424034: "Slides",
+  423222: "Tênis",
+  437495: "Papetes",
+  423193: "Rasteiras",
+  423194: "Saltos",
+  423830: "Tamancos",
+  423226: "Bolsas",
+  423227: "Botas",
+  423229: "Flatforms",
+  423230: "Papetes",
+  423228: "Rasteiras",
+  423231: "Saltos",
+  423232: "Sapatilhas",
+  423233: "Tamancos",
+  423234: "Tênis",
+  423239: "Anabelas",
+  423240: "Bolsas",
+  423241: "Botas",
+  423243: "Crocs",
+  423245: "Flatforms",
+  423246: "Meias",
+  423249: "Papetes",
+  423244: "Rasteiras",
+  423250: "Saltos",
+  423252: "Sapatilhas",
+  423253: "Tamancos",
+  423254: "Tênis",
+  423293: "Anabelas",
+  423295: "Botas",
+  366540: "Flatforms",
+  423297: "Papetes",
+  423296: "Rasteiras",
+  423298: "Saltos",
+  425018: "Sapatilhas",
+  423299: "Tamancos",
+  423300: "Tênis",
+}
+
+const CDN = "https://arquivos.facilzap.app.br"
 
 function slugify(text) {
   return String(text || "")
@@ -63,12 +126,19 @@ function precoCusto(produto) {
   return null
 }
 
+function absolutizar(caminho) {
+  if (typeof caminho !== "string" || !caminho.trim()) return null
+  if (caminho.startsWith("http://") || caminho.startsWith("https://")) return caminho
+  return `${CDN}/${caminho.replace(/^\//, "")}`
+}
+
 function urlsDe(valor) {
   const achados = []
   const visitar = (item) => {
     if (!item) return
-    if (typeof item === "string" && item.startsWith("http")) {
-      achados.push(item)
+    if (typeof item === "string") {
+      const url = absolutizar(item)
+      if (url) achados.push(url)
       return
     }
     if (Array.isArray(item)) {
@@ -77,14 +147,29 @@ function urlsDe(valor) {
     }
     if (typeof item === "object") {
       for (const chave of ["url", "src", "imagem", "caminho", "original", "large", "thumb"]) {
-        if (typeof item[chave] === "string" && item[chave].startsWith("http")) {
-          achados.push(item[chave])
-        }
+        const url = absolutizar(item[chave])
+        if (url) achados.push(url)
       }
     }
   }
   visitar(valor)
   return [...new Set(achados)].slice(0, 6)
+}
+
+function linhaDo(produto, marcaId) {
+  const grupos = produto.categorias?.[marcaId]
+  const subId = Array.isArray(grupos) ? grupos[0] : null
+  const nome = (subId && SUB[subId]) || textoLimpo(produto.categoria_nome) || "Calçados"
+  return { id: slugify(nome) || "calcados", name: nome }
+}
+
+function quantidade(produto, variacao) {
+  const id = String(variacao.id)
+  const estoque = parseInt(produto.estoque?.[id], 10)
+  const disponivel = String(produto.disponibilidade?.[id] || "") === "1"
+  if (Number.isFinite(estoque) && estoque > 0) return estoque
+  if (disponivel) return 3
+  return 0
 }
 
 function listaVariacoes(produto) {
@@ -141,12 +226,53 @@ function amostra(nome) {
   return AMOSTRA[chave] || "#cfc6ba"
 }
 
-function estoqueDe(variacao, produto) {
-  if (String(produto.controlar_estoque) === "1") {
-    const n = parseInt(variacao.estoque, 10)
-    return Number.isFinite(n) && n > 0 ? n : 0
+function corPeloNome(nome, marca) {
+  const base = String(nome || "")
+    .replace(new RegExp(`\\s*-\\s*${marca}\\s*$`, "i"), "")
+    .toLowerCase()
+  const cores = [
+    "off white",
+    "branco off",
+    "verde",
+    "lilás",
+    "lilas",
+    "vermelha",
+    "vermelho",
+    "preta",
+    "preto",
+    "branca",
+    "branco",
+    "nude",
+    "bege",
+    "caramelo",
+    "marrom",
+    "dourada",
+    "dourado",
+    "prata",
+    "rosa",
+    "azul",
+    "laranja",
+    "café",
+    "cafe",
+    "camel",
+    "chocolate",
+    "ostra",
+  ]
+  for (const cor of cores) {
+    if (base.includes(cor)) {
+      return cor.replace(/(^|\s)\p{L}/gu, (letra) => letra.toUpperCase())
+    }
   }
-  return 3
+  return "Única"
+}
+
+function descricaoPublica(produto, reserva) {
+  const texto = textoLimpo(produto.descricao || produto.descricao_curta)
+    .replace(/\b(atacado|varejo)\s*:?\s*(r\$\s*)?[\d.,]+/gi, "")
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\uFE0F]/gu, "")
+    .replace(/\s+/g, " ")
+    .trim()
+  return texto || reserva
 }
 
 function textoLimpo(valor) {
@@ -156,21 +282,22 @@ function textoLimpo(valor) {
     .trim()
 }
 
-function normalizar(produto, marca) {
+function normalizar(produto, marca, marcaId) {
   const nome = textoLimpo(produto.nome || produto.titulo)
   const custo = precoCusto(produto)
   const imagensProduto = urlsDe(produto.imagens)
   if (!nome || !custo || imagensProduto.length === 0) return null
 
-  const categoriaNome = textoLimpo(produto.categoria_nome || produto.subcategoria || "Calçados")
-  if (PULAR.test(categoriaNome) || PULAR.test(nome)) return null
+  const linha = linhaDo(produto, marcaId)
+  if (PULAR.test(linha.name)) return null
 
-  const categoria = slugify(categoriaNome) || "calcados"
+  const categoria = linha.id
+  const categoriaNome = linha.name
   const variacoes = listaVariacoes(produto)
   const grupos = new Map()
 
   for (const variacao of variacoes) {
-    const cor = corDe(variacao) || "Única"
+    const cor = corDe(variacao) || corPeloNome(nome, marca)
     const id = slugify(cor) || "unica"
     if (!grupos.has(id)) {
       grupos.set(id, {
@@ -182,16 +309,16 @@ function normalizar(produto, marca) {
       })
     }
     const tamanho = tamanhoDe(variacao.nome) || tamanhoDe(variacao.nome_tratado)
-    if (tamanho) grupos.get(id).sizes.set(tamanho, estoqueDe(variacao, produto))
+    if (tamanho) grupos.get(id).sizes.set(tamanho, quantidade(produto, variacao))
   }
 
   let colors = [...grupos.values()]
   if (colors.length === 0) {
     colors = [
       {
-        id: "unica",
-        name: "Única",
-        swatch: "#cfc6ba",
+        id: slugify(corPeloNome(nome, marca)) || "unica",
+        name: corPeloNome(nome, marca),
+        swatch: amostra(corPeloNome(nome, marca)),
         images: imagensProduto,
         sizes: new Map(),
       },
@@ -216,9 +343,10 @@ function normalizar(produto, marca) {
   const tamanhos = [...sizes].sort()
   const id = String(produto.id)
   const referencia = textoLimpo(produto.sku || produto.referencia || produto.cod_barras) || null
-  const descricao =
-    textoLimpo(produto.descricao || produto.descricao_curta) ||
-    `${nome}. ${marca}, numeração ${tamanhos[0]} ao ${tamanhos[tamanhos.length - 1]}.`
+  const descricao = descricaoPublica(
+    produto,
+    `${nome}. ${marca}, numeração ${tamanhos[0]} ao ${tamanhos[tamanhos.length - 1]}.`,
+  )
 
   return {
     slug: `${slugify(nome) || "par"}-${id}`,
@@ -292,18 +420,24 @@ async function marcaCompleta(marca) {
   return brutos
 }
 
+if (process.env.AURORA_SAMPLE) {
+  const { readFileSync } = await import("node:fs")
+  const amostra = JSON.parse(readFileSync(process.env.AURORA_SAMPLE, "utf8"))
+  for (const item of amostra) {
+    const marca = MARCAS.find((entry) => entry.marca === item.marca) || MARCAS[0]
+    console.log(JSON.stringify(normalizar(item.produto, marca.marca, marca.id), null, 2))
+  }
+  process.exit(0)
+}
+
 const porId = new Map()
-const amostras = []
 
 for (const marca of MARCAS) {
   const brutos = await marcaCompleta(marca)
-  if (brutos[0] && amostras.length < 2) {
-    amostras.push({ marca: marca.marca, chaves: Object.keys(brutos[0]), produto: brutos[0] })
-  }
   for (const bruto of brutos) {
     const id = String(bruto.id)
     if (porId.has(id)) continue
-    const produto = normalizar(bruto, marca.marca)
+    const produto = normalizar(bruto, marca.marca, marca.id)
     if (produto) porId.set(id, produto)
   }
 }
@@ -314,22 +448,34 @@ for (const product of products) {
   contagem.set(product.category, (contagem.get(product.category) || 0) + 1)
 }
 const ordem = [...contagem.entries()].sort((a, b) => b[1] - a[1]).map(([id]) => id)
+const destaques = ["rasteiras", "papetes", "saltos", "tenis", "sapatilhas", "botas", "flatforms"]
+let marcados = 0
+for (const categoria of destaques) {
+  const produto = products.find((item) => item.category === categoria)
+  if (!produto) continue
+  produto.featured = true
+  marcados += 1
+}
 for (const product of products) {
-  product.featured = ordem.slice(0, 6).includes(product.category) && product.brand === "Vizzano"
+  if (marcados >= 6) break
+  if (product.featured) continue
+  product.featured = true
+  marcados += 1
 }
-if (!products.some((product) => product.featured)) {
-  products.slice(0, 6).forEach((product) => {
-    product.featured = true
-  })
-}
+
+const categories = ordem.map((id) => {
+  const exemplo = products.find((product) => product.category === id)
+  return {
+    id,
+    name: exemplo.categoryName,
+    blurb: `${contagem.get(id)} pares de ${exemplo.categoryName.toLowerCase()} na coleção.`,
+    image: exemplo.colors[0].images[0],
+  }
+})
 
 const destino = join(process.cwd(), "src/data/aurora.json")
 mkdirSync(dirname(destino), { recursive: true })
-writeFileSync(destino, `${JSON.stringify(products)}\n`)
-writeFileSync(
-  join(process.cwd(), "src/data/aurora-sample.json"),
-  `${JSON.stringify(amostras, null, 2)}\n`,
-)
+writeFileSync(destino, `${JSON.stringify({ products, categories })}\n`)
 
 console.log(`Anúncios prontos: ${products.length}`)
 console.log(
