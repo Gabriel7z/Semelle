@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs"
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 
 const PHONE = "61995730688"
@@ -156,10 +156,40 @@ function urlsDe(valor) {
   return [...new Set(achados)].slice(0, 6)
 }
 
-function linhaDo(produto, marcaId) {
+const TIPOS = [
+  [/papete/i, "Papetes"],
+  [/rasteir/i, "Rasteiras"],
+  [/sapatilha/i, "Sapatilhas"],
+  [/tamanco/i, "Tamancos"],
+  [/anabela/i, "Anabelas"],
+  [/\bmules?\b/i, "Mules"],
+  [/chinelo/i, "Chinelos"],
+  [/flatform|\bflat\b/i, "Flatforms"],
+  [/slide|birken/i, "Slides"],
+  [/croc/i, "Crocs"],
+  [/bota/i, "Botas"],
+  [/t[eê]nis/i, "Tênis"],
+  [/scarpin|\bsalto\b/i, "Saltos"],
+]
+
+function tipoPeloNome(nome) {
+  const texto = textoLimpo(nome)
+  for (const [regra, tipo] of TIPOS) {
+    if (regra.test(texto)) return tipo
+  }
+  return ""
+}
+
+function linhaDo(produto, marcaId, marca) {
   const grupos = produto.categorias?.[marcaId]
   const subId = Array.isArray(grupos) ? grupos[0] : null
-  const nome = (subId && SUB[subId]) || textoLimpo(produto.categoria_nome) || "Calçados"
+  let nome = (subId && SUB[subId]) || ""
+  if (!nome) {
+    nome = tipoPeloNome(produto.nome || produto.titulo) || textoLimpo(produto.categoria_nome) || "Calçados"
+  }
+  if (nome === marca || /^filtro$/i.test(nome)) {
+    nome = tipoPeloNome(produto.nome || produto.titulo) || nome
+  }
   return { id: slugify(nome) || "calcados", name: nome }
 }
 
@@ -340,10 +370,11 @@ function normalizar(produto, marca, marcaId) {
   const custo = precoCusto(produto)
   const imagensProduto = urlsDe(produto.imagens)
   if (!nome || !custo || imagensProduto.length === 0) return null
-  if (/^\s*bolsa\b/i.test(nome)) return null
+  if (/^\s*(bolsa|carteira|mochila|necessaire|meia|caixa)\b/i.test(nome)) return null
 
-  const linha = linhaDo(produto, marcaId)
+  const linha = linhaDo(produto, marcaId, marca)
   if (PULAR.test(linha.name)) return null
+  if (linha.name === marca || /^(filtro|calçados|calcados)$/i.test(linha.name)) return null
 
   const categoria = linha.id
   const categoriaNome = linha.name
@@ -418,9 +449,11 @@ function normalizar(produto, marca, marcaId) {
       categoriaNome,
       `Numeração ${tamanhos.join(", ")}`,
     ],
-    colors: colors.map(({ sizes: _sizes, ...color }) => color),
+    colors: colors
+      .map(({ sizes: _sizes, ...color }) => color)
+      .sort((a, b) => a.id.localeCompare(b.id, "pt")),
     sizes: tamanhos,
-    stock,
+    stock: Object.fromEntries(Object.entries(stock).sort(([a], [b]) => a.localeCompare(b, "en"))),
     supplierId: id,
   }
 }
@@ -496,7 +529,9 @@ for (const marca of MARCAS) {
   }
 }
 
-const products = [...porId.values()]
+const products = [...porId.values()].sort((a, b) =>
+  a.supplierId.localeCompare(b.supplierId, "en", { numeric: true }),
+)
 const contagem = new Map()
 for (const product of products) {
   contagem.set(product.category, (contagem.get(product.category) || 0) + 1)
@@ -527,7 +562,25 @@ const categories = ordem.map((id) => {
   }
 })
 
+if (products.length < 400) {
+  console.error(`Catálogo curto demais (${products.length}). A vitrine atual foi mantida.`)
+  process.exit(1)
+}
+
 const destino = join(process.cwd(), "src/data/aurora.json")
+let anterior = 0
+try {
+  anterior = JSON.parse(readFileSync(destino, "utf8")).products.length
+} catch {
+  anterior = 0
+}
+if (anterior && products.length < anterior * 0.7) {
+  console.error(
+    `A Aurora devolveu ${products.length} anúncios e a vitrine tem ${anterior}. A vitrine atual foi mantida.`,
+  )
+  process.exit(1)
+}
+
 mkdirSync(dirname(destino), { recursive: true })
 writeFileSync(destino, `${JSON.stringify({ products, categories })}\n`)
 

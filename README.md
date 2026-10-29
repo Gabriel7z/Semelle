@@ -19,6 +19,8 @@ A loja publicada fica em [https://gabriel7z.github.io/Semelle/](https://gabriel7
 
 Os anúncios vêm do catálogo público da [Aurora Calçados](https://auroracalcados.com.br/), o atacado em Novo Gama. `node scripts/importar-aurora.mjs` grava `src/data/aurora.json`. O campo `cost` é o preço de custo, em centavos.
 
+O GitHub Actions lê esse catálogo a cada 30 minutos. Se preço ou estoque mudou, grava o arquivo novo e publica o site de novo. A visita da cliente não consulta a Aurora na hora: o GitHub Pages só consegue mostrar o último retrato publicado. Dá para forçar uma leitura em Actions, no fluxo "Importar catálogo Aurora".
+
 A loja aplica a margem de `src/lib/margem.ts` (`MARGEM = 0.5`, ou seja, 50% em cima do custo). Um par de R$ 89,90 no fornecedor aparece na vitrine por R$ 134,85. O build grava essa vitrine em `src/data/vitrine.json`, já com o preço de venda e sem o custo.
 
 O mesmo catálogo sai como JSON, com o custo, sem a margem. O build grava os arquivos em `public/api/fornecedor` (`npm run api`). No GitHub Pages:
