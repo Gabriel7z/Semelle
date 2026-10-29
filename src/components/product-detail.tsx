@@ -15,7 +15,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { shoeSizes, unitsLeft, type Product } from "@/data/catalog"
+import { shoeSizes, unitsLeft } from "@/data/catalog"
+import type { Product } from "@/lib/loja"
 import { formatBRL, installmentLabel, maskCep } from "@/lib/format"
 import { quoteShipping } from "@/lib/shipping"
 import { cn } from "cn"

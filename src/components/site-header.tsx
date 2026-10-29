@@ -19,7 +19,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
-import { categories, products, store } from "@/data/catalog"
+import { categories, store } from "@/data/catalog"
+import { products } from "@/lib/loja"
 import { formatBRL } from "@/lib/format"
 import { cn } from "cn"
 

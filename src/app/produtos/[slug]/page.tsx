@@ -2,7 +2,8 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { ProductCard } from "@/components/product-card"
 import { ProductDetail } from "@/components/product-detail"
-import { getProduct, products, relatedProducts, store } from "@/data/catalog"
+import { store } from "@/data/catalog"
+import { getProduct, products, relatedProducts } from "@/lib/loja"
 import { formatBRL } from "@/lib/format"
 
 type Params = { slug: string }

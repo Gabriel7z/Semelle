@@ -3,7 +3,8 @@
 import { useMemo } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { ProductCard } from "@/components/product-card"
-import { brands, categories, products, type CategoryId } from "@/data/catalog"
+import { categories, type CategoryId } from "@/data/catalog"
+import { brands, products } from "@/lib/loja"
 import { cn } from "cn"
 
 const sorts = [

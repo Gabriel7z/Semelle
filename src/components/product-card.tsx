@@ -1,7 +1,8 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
-import { categoryName, type Product } from "@/data/catalog"
+import { categoryName } from "@/data/catalog"
+import type { Product } from "@/lib/loja"
 import { formatBRL } from "@/lib/format"
 
 export function ProductCard({ product }: { product: Product }) {

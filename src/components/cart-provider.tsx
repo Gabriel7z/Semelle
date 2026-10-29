@@ -10,7 +10,8 @@ import {
   useState,
 } from "react"
 import { toast } from "sonner"
-import { getProduct, unitsLeft } from "@/data/catalog"
+import { unitsLeft } from "@/data/catalog"
+import { getProduct } from "@/lib/loja"
 
 export type CartLine = {
   key: string

@@ -28,7 +28,7 @@ export type Product = {
   name: string
   brand: string
   category: CategoryId
-  price: number
+  cost: number
   reference?: string
   badge?: string
   featured?: boolean
@@ -89,7 +89,7 @@ export const products: Product[] = [
     name: "Scarpin Slingback",
     brand: "Vizzano",
     category: "scarpins",
-    price: 18990,
+    cost: 18990,
     featured: true,
     caption: "Um scarpin é indispensável para quem ama elegância e conforto.",
     description:
@@ -117,7 +117,7 @@ export const products: Product[] = [
     name: "Rasteira Brilho H",
     brand: "Vizzano",
     category: "rasteiras",
-    price: 13990,
+    cost: 13990,
     reference: "6371.1105",
     badge: "Mais pedida",
     featured: true,
@@ -184,7 +184,7 @@ export const products: Product[] = [
     name: "Papete Glitter",
     brand: "Beira Rio",
     category: "papetes",
-    price: 9990,
+    cost: 9990,
     featured: true,
     caption: "Minimalista e confortável.",
     description:
@@ -212,7 +212,7 @@ export const products: Product[] = [
     name: "Papete Strass",
     brand: "Vizzano",
     category: "papetes",
-    price: 15990,
+    cost: 15990,
     badge: "Vizzano",
     featured: true,
     caption: "Minimalistas, versáteis e com o brilho certo — exatamente como seu dia pede.",
@@ -250,7 +250,7 @@ export const products: Product[] = [
     name: "Papete Ornamento",
     brand: "Semelle",
     category: "papetes",
-    price: 12990,
+    cost: 12990,
     caption: "Sofisticada e confortável: do jeito que você merece.",
     description:
       "A tira larga fecha num ornamento dourado. Off white ou marrom, a papete tem cara de salto sem a altura — o par que a Semelle indica para quem quer presença e descanso no mesmo pé.",
@@ -283,7 +283,7 @@ export const products: Product[] = [
     name: "Rasteira Flor",
     brand: "Semelle",
     category: "rasteiras",
-    price: 14990,
+    cost: 14990,
     featured: true,
     caption: "Flor em destaque, brilho na medida certa e aquele toque especial que transforma qualquer produção.",
     description:
