@@ -8,6 +8,8 @@ import { formatBRL } from "@/lib/format"
 
 type Params = { slug: string }
 
+export const dynamicParams = false
+
 export function generateStaticParams() {
   return products.map((product) => ({ slug: product.slug }))
 }

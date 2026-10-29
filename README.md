@@ -13,17 +13,19 @@ npm run dev
 
 Abra [http://localhost:3000](http://localhost:3000).
 
+A loja publicada fica em [https://gabriel7z.github.io/Semelle/](https://gabriel7z.github.io/Semelle/). Cada push na `main` gera o site estático e o GitHub Pages publica a pasta `out`.
+
 ## Fornecedor e margem
 
 O arquivo `src/data/catalog.ts` é o catálogo do fornecedor. O campo `cost` é o preço de custo, em centavos (`13990` = R$ 139,90).
 
 A loja lê esses anúncios e aplica a margem de `src/lib/margem.ts` (`MARGEM = 0.5`, ou seja, 50% em cima do custo). A rasteira de R$ 139,90 no fornecedor aparece na vitrine por R$ 209,85.
 
-A mesma lista sai como API:
+O mesmo catálogo sai como JSON. O build grava os arquivos em `public/api/fornecedor` (`npm run api`). No GitHub Pages:
 
 ```bash
-curl http://localhost:3000/api/fornecedor/produtos
-curl http://localhost:3000/api/fornecedor/produtos/rasteira-brilho-h
+curl https://gabriel7z.github.io/Semelle/api/fornecedor/produtos.json
+curl https://gabriel7z.github.io/Semelle/api/fornecedor/produtos/rasteira-brilho-h.json
 ```
 
 A resposta traz o custo do fornecedor, sem a margem. Quem consome a API aplica o próprio ganho. Esta loja faz isso em `src/lib/loja.ts`.

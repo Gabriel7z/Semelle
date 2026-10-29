@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
@@ -8,7 +9,8 @@ import { store } from "@/data/catalog"
 import { formatBRL, formatWhen } from "@/lib/format"
 import { formatOrderText, getOrder, type Order } from "@/lib/orders"
 
-export function OrderView({ id }: { id: string }) {
+export function OrderView() {
+  const id = useSearchParams().get("id") ?? ""
   const [order, setOrder] = useState<Order | null | undefined>(undefined)
 
   useEffect(() => {
@@ -36,7 +38,10 @@ export function OrderView({ id }: { id: string }) {
       <div className="mx-auto max-w-xl px-4 py-20 sm:px-6">
         <h1 className="font-heading text-4xl text-primary">Pedido não encontrado.</h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          Os pedidos ficam salvos neste navegador. Se você abriu outro aparelho ou limpou os dados, o número {id} não aparece aqui.
+          Os pedidos ficam salvos neste navegador.
+          {id
+            ? ` Se você abriu outro aparelho ou limpou os dados, o número ${id} não aparece aqui.`
+            : " Reserve um par para ver o resumo aqui."}
         </p>
         <Button nativeButton={false} className="mt-6 h-11" render={<Link href="/produtos" />}>
           Voltar à coleção

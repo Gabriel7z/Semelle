@@ -18,6 +18,9 @@
 /.next/
 /out/
 
+# JSON do fornecedor, gerado por scripts/gerar-api.ts
+/public/api/
+
 # production
 /build
 

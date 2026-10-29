@@ -138,7 +138,7 @@ export function CheckoutForm() {
     const text = formatOrderText(order)
     sessionStorage.setItem(`semelle-order-text-${order.id}`, text)
     clear()
-    router.push(`/pedido/${order.id}`)
+    router.push(`/pedido?id=${encodeURIComponent(order.id)}`)
   }
 
   if (!ready) {

@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "dev": "tsx scripts/gerar-api.ts && next dev --turbopack",
+    "build": "tsx scripts/gerar-api.ts && next build",
+    "api": "tsx scripts/gerar-api.ts",
     "start": "next start",
     "lint": "eslint"
   },
@@ -30,6 +31,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.28",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }
