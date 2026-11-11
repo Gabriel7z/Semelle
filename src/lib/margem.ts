@@ -1,5 +1,5 @@
-/** Margem da loja sobre o preço do fornecedor. 0,55 = 55% mais caro. */
-export const MARGEM = 0.55
+/** Margem da loja sobre o preço do fornecedor. 1,05 = 105% mais caro. */
+export const MARGEM = 1.05
 
 export function precoVenda(custoCentavos: number) {
   const precoBase = Math.ceil(custoCentavos * (1 + MARGEM))
