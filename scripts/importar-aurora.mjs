@@ -17,6 +17,11 @@ const MARCAS = [
 
 const PULAR = /^(bolsas?|meias?)$/i
 
+const IMAGENS_CATEGORIA = {
+  rasteiras: "/products/rasteira-flor.jpg",
+  flatforms: "https://arquivos.facilzap.app.br/produtos/1736773219_d463439d4546c50b9097.jpg.webp",
+}
+
 /** Subcategorias do catálogo público, no id que a Aurora manda em `categorias`. */
 const SUB = {
   423192: "Aurora Glam",
@@ -566,7 +571,7 @@ const categories = ordem.map((id) => {
     id,
     name: exemplo.categoryName,
     blurb: `${contagem.get(id)} pares de ${exemplo.categoryName.toLowerCase()} na coleção.`,
-    image: exemplo.colors[0].images[0],
+    image: IMAGENS_CATEGORIA[id] || exemplo.colors[0].images[0],
   }
 })
 
