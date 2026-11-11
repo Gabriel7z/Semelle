@@ -22,6 +22,8 @@ const IMAGENS_CATEGORIA = {
   flatforms: "https://arquivos.facilzap.app.br/produtos/1736773219_d463439d4546c50b9097.jpg.webp",
 }
 
+const CATEGORIAS_DESTAQUE = ["rasteiras", "flatforms", "papetes", "saltos", "tenis", "sapatilhas", "botas"]
+
 /** Subcategorias do catálogo público, no id que a Aurora manda em `categorias`. */
 const SUB = {
   423192: "Aurora Glam",
@@ -549,10 +551,20 @@ const contagem = new Map()
 for (const product of products) {
   contagem.set(product.category, (contagem.get(product.category) || 0) + 1)
 }
-const ordem = [...contagem.entries()].sort((a, b) => b[1] - a[1]).map(([id]) => id)
-const destaques = ["rasteiras", "papetes", "saltos", "tenis", "sapatilhas", "botas", "flatforms"]
+const ordem = [...contagem.entries()]
+  .sort((a, b) => {
+    const destaqueA = CATEGORIAS_DESTAQUE.indexOf(a[0])
+    const destaqueB = CATEGORIAS_DESTAQUE.indexOf(b[0])
+    if (destaqueA !== -1 || destaqueB !== -1) {
+      if (destaqueA === -1) return 1
+      if (destaqueB === -1) return -1
+      return destaqueA - destaqueB
+    }
+    return b[1] - a[1]
+  })
+  .map(([id]) => id)
 let marcados = 0
-for (const categoria of destaques) {
+for (const categoria of CATEGORIAS_DESTAQUE) {
   const produto = products.find((item) => item.category === categoria)
   if (!produto) continue
   produto.featured = true
