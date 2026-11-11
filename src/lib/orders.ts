@@ -38,6 +38,8 @@ export type Order = {
   note: string
   items: OrderItem[]
   subtotal: number
+  discountLabel?: string
+  discountPrice?: number
   total: number
 }
 
@@ -58,6 +60,10 @@ export function saveOrder(order: Order) {
 
 export function getOrder(id: string) {
   return readOrders().find((order) => order.id === id) ?? null
+}
+
+export function hasSavedOrders() {
+  return readOrders().length > 0
 }
 
 function readOrders(): Order[] {
@@ -81,6 +87,9 @@ export function formatOrderText(order: Order) {
     ),
     "",
     `Subtotal: ${formatBRL(order.subtotal)}`,
+    ...(order.discountPrice
+      ? [`Desconto: -${formatBRL(order.discountPrice)} (${order.discountLabel ?? "promoção"})`]
+      : []),
     `Frete: ${order.shippingPrice === 0 ? "grátis" : formatBRL(order.shippingPrice)} (${order.shippingLabel})`,
     `Total: ${formatBRL(order.total)}`,
     `Pagamento: ${order.payment === "pix" ? "PIX" : "combinar no atendimento"}`,

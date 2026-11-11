@@ -79,6 +79,12 @@ export function OrderView() {
           ))}
         </ul>
         <dl className="space-y-1 border-t border-border px-4 py-4 text-sm">
+          {order.discountPrice ? (
+            <div className="flex justify-between text-primary">
+              <dt>{order.discountLabel ?? "Desconto"}</dt>
+              <dd>-{formatBRL(order.discountPrice)}</dd>
+            </div>
+          ) : null}
           <div className="flex justify-between">
             <dt>Frete</dt>
             <dd>{order.shippingPrice === 0 ? "Grátis" : formatBRL(order.shippingPrice)}</dd>

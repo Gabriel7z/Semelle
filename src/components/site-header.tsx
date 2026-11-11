@@ -56,8 +56,8 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-md">
       <div className="bg-primary text-primary-foreground">
         <p className="mx-auto max-w-6xl px-4 py-2 text-center text-[0.72rem] tracking-wide sm:px-6">
-          Frete grátis para Brasília acima de {formatBRL(store.freeShippingCents)}
-          <span className="hidden sm:inline"> · Enviamos para todo o Brasil</span>
+          Primeira compra no site: 20% off no PIX
+          <span className="hidden sm:inline"> · Frete grátis para Brasília acima de {formatBRL(store.freeShippingCents)}</span>
         </p>
       </div>
       <div className="mx-auto grid max-w-6xl grid-cols-3 items-center px-4 py-3 sm:px-6">

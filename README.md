@@ -2,7 +2,7 @@
 
 Loja da [Use Semelle](https://www.instagram.com/usesemelle/) — calçados femininos em Brasília. A vitrine reúne papetes, rasteiras, saltos, tênis e botas das linhas Vizzano, Beira Rio, Modare, Moleca, Activitta e Aurora.
 
-O pedido é reservado no site. A confirmação de estoque e o PIX acontecem no Instagram. Nenhum cartão é cobrado aqui.
+O pedido é reservado no site. A confirmação de estoque e o PIX acontecem no WhatsApp. Nenhum cartão é cobrado aqui.
 
 ## Rodar
 
@@ -36,7 +36,11 @@ Frete:
 
 - Brasília (CEP 70000-000 a 73699-999), grátis acima de R$ 249; abaixo disso, R$ 14,90
 - Restante do Brasil: R$ 27,90
-- Retirada em Brasília: combinada pelo Instagram
+- Retirada em Brasília: combinada pelo WhatsApp
+
+Promoção:
+
+- Primeira compra no site tem 20% de desconto no subtotal, somente para pagamento à vista no PIX
 
 As fotos dos anúncios são as do catálogo da Aurora.
 

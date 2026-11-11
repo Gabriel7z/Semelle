@@ -10,7 +10,8 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { store } from "@/data/catalog"
 import { digits, formatBRL, maskCep, maskPhone } from "@/lib/format"
-import { formatOrderText, newOrderId, saveOrder, type Order, whatsappOrderUrl } from "@/lib/orders"
+import { formatOrderText, hasSavedOrders, newOrderId, saveOrder, type Order, whatsappOrderUrl } from "@/lib/orders"
+import { firstPixDiscountCents } from "@/lib/promotion"
 import { lookupCep, quoteShipping } from "@/lib/shipping"
 import { cn } from "cn"
 
@@ -35,6 +36,11 @@ export function CheckoutForm() {
   const [cepMessage, setCepMessage] = useState("")
   const [errors, setErrors] = useState<FieldErrors>({})
   const [submitting, setSubmitting] = useState(false)
+  const [firstOrder, setFirstOrder] = useState(false)
+
+  useEffect(() => {
+    setFirstOrder(!hasSavedOrders())
+  }, [])
 
   useEffect(() => {
     const clean = digits(cep)
@@ -70,7 +76,8 @@ export function CheckoutForm() {
       ? quoteShipping(cep, subtotal, method)
       : null
   const shippingPrice = quote?.price ?? 0
-  const total = subtotal + (quote ? shippingPrice : 0)
+  const pixDiscount = firstPixDiscountCents(subtotal, firstOrder && payment === "pix")
+  const total = subtotal - pixDiscount + (quote ? shippingPrice : 0)
 
   function validate() {
     const next: FieldErrors = {}
@@ -130,7 +137,9 @@ export function CheckoutForm() {
         qty: line.qty,
       })),
       subtotal,
-      total: subtotal + quote.price,
+      discountLabel: pixDiscount ? "Primeira compra no site, à vista no PIX" : undefined,
+      discountPrice: pixDiscount || undefined,
+      total: subtotal - pixDiscount + quote.price,
     }
     saveOrder(order)
     const text = formatOrderText(order)
@@ -250,6 +259,11 @@ export function CheckoutForm() {
 
         <fieldset className="space-y-3">
           <legend className="text-sm font-medium">Pagamento</legend>
+          {firstOrder ? (
+            <p className="border border-gold/40 bg-gold/10 px-3 py-2 text-sm text-primary">
+              Primeira compra no site: 20% de desconto à vista no PIX.
+            </p>
+          ) : null}
           <div className="grid gap-2 sm:grid-cols-2">
             <Choice pressed={payment === "pix"} onClick={() => setPayment("pix")}>
               PIX depois da confirmação
@@ -296,6 +310,16 @@ export function CheckoutForm() {
             <dt>Subtotal</dt>
             <dd>{formatBRL(subtotal)}</dd>
           </div>
+          {pixDiscount ? (
+            <div className="flex justify-between text-primary">
+              <dt>Desconto PIX 1ª compra</dt>
+              <dd>-{formatBRL(pixDiscount)}</dd>
+            </div>
+          ) : firstOrder ? (
+            <p className="text-xs text-muted-foreground">
+              Selecione PIX para aplicar 20% de desconto na primeira compra.
+            </p>
+          ) : null}
           <div className="flex justify-between">
             <dt>Frete</dt>
             <dd>
