@@ -6,7 +6,6 @@ const ORIGIN = "https://auroracalcados.com.br"
 
 /** Linhas femininas do atacado. Cada id é a categoria “ver tudo” da marca. */
 const MARCAS = [
-  { id: "246349", marca: "Aurora" },
   { id: "239479", marca: "Activitta" },
   { id: "200875", marca: "Beira Rio" },
   { id: "239482", marca: "BR Sport" },

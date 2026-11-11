@@ -150,7 +150,7 @@ export default function HomePage() {
             </blockquote>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
               {quote?.description ? `${resumo(quote.description)} ` : null}
-              A Use Semelle monta a coleção em {store.city}: Vizzano, Beira Rio, Modare, Moleca e a linha Aurora.
+              A Use Semelle monta a coleção em {store.city}: Vizzano, Beira Rio, Modare, Moleca e outras marcas selecionadas.
             </p>
             <Link href="/sobre" className="mt-6 inline-block text-sm underline underline-offset-4">
               Conhecer a loja
