@@ -75,7 +75,7 @@ export function SiteHeader() {
             href={store.instagram}
             target="_blank"
             rel="noreferrer"
-            aria-label="Instagram da Semelle"
+            aria-label={`Instagram da ${store.name}`}
             className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "hidden lg:inline-flex")}
           >
             <InstagramIcon className="size-4" />
@@ -86,7 +86,7 @@ export function SiteHeader() {
             {store.tagline}
           </span>
           <span className="block text-[1.35rem] leading-none font-extrabold tracking-tight text-primary italic sm:text-[1.65rem]">
-            semelle
+            use semelle
           </span>
         </Link>
         <div className="flex items-center justify-end gap-1">
@@ -129,7 +129,7 @@ export function SiteHeader() {
       <Sheet open={menu} onOpenChange={setMenu}>
         <SheetContent side="left" className="w-full overflow-y-auto sm:max-w-xs">
           <SheetHeader>
-            <SheetTitle className="font-heading text-2xl italic">semelle</SheetTitle>
+            <SheetTitle className="font-heading text-2xl italic">use semelle</SheetTitle>
           </SheetHeader>
           <nav className="flex flex-col gap-1 px-4 pb-8">
             <Link href="/produtos" onClick={() => setMenu(false)} className="border-b border-border py-3 text-lg">

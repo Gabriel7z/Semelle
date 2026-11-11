@@ -17,7 +17,7 @@ const steps = [
   {
     n: "01",
     title: "Escolha cor e número",
-    text: "A vitrine é a coleção da Semelle. Cada par mostra cor, número e o que está disponível.",
+    text: "A vitrine é a coleção da Use Semelle. Cada par mostra cor, número e o que está disponível.",
   },
   {
     n: "02",
@@ -27,7 +27,7 @@ const steps = [
   {
     n: "03",
     title: "Confirme no WhatsApp",
-    text: "A Semelle recebe o pedido, confere o estoque e envia o PIX, ou combina a retirada em Brasília.",
+    text: "A Use Semelle recebe o pedido, confere o estoque e envia o PIX, ou combina a retirada em Brasília.",
   },
 ]
 
@@ -85,7 +85,7 @@ export default function HomePage() {
           <div className="relative order-first min-h-[72vw] bg-[#efe8dc] sm:min-h-[440px] lg:order-none">
             <Image
               src={hero}
-              alt={quote ? `${quote.name} ${quote.brand}` : "Coleção Semelle"}
+              alt={quote ? `${quote.name} ${quote.brand}` : "Coleção Use Semelle"}
               fill
               priority
               sizes="(min-width: 1024px) 50vw, 100vw"
@@ -99,7 +99,7 @@ export default function HomePage() {
         <div className="semelle-marquee flex w-max gap-8 text-[0.72rem] tracking-[0.22em] text-muted-foreground uppercase">
           {Array.from({ length: 2 }).map((_, copy) => (
             <p key={copy} className="flex gap-8">
-              {["Vizzano", "Beira Rio", "Modare", "Moleca", "Semelle", "Brasília"].map((item) => (
+              {["Vizzano", "Beira Rio", "Modare", "Moleca", "Use Semelle", "Brasília"].map((item) => (
                 <span key={`${copy}-${item}`}>{item}</span>
               ))}
             </p>
@@ -135,7 +135,7 @@ export default function HomePage() {
           <div className="relative aspect-square overflow-hidden bg-[#efe8dc]">
             <Image
               src={hero}
-              alt={quote ? `${quote.name} ${quote.brand}` : "Coleção Semelle"}
+              alt={quote ? `${quote.name} ${quote.brand}` : "Coleção Use Semelle"}
               fill
               sizes="(min-width: 768px) 40vw, 100vw"
               className="object-cover"
@@ -150,7 +150,7 @@ export default function HomePage() {
             </blockquote>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
               {quote?.description ? `${resumo(quote.description)} ` : null}
-              A Semelle monta a coleção em {store.city}: Vizzano, Beira Rio, Modare, Moleca e a linha Aurora.
+              A Use Semelle monta a coleção em {store.city}: Vizzano, Beira Rio, Modare, Moleca e a linha Aurora.
             </p>
             <Link href="/sobre" className="mt-6 inline-block text-sm underline underline-offset-4">
               Conhecer a loja

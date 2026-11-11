@@ -60,8 +60,8 @@ export function OrderView() {
       </p>
       <p className="mt-5 leading-relaxed">
         {order.payment === "pix"
-          ? "A Semelle confere o número e envia a chave PIX pelo WhatsApp. O par só segue para separação depois do pagamento."
-          : "A Semelle responde no WhatsApp para combinar o pagamento. Não pedimos dados de cartão neste site."}
+          ? "A Use Semelle confere o número e envia a chave PIX pelo WhatsApp. O par só segue para separação depois do pagamento."
+          : "A Use Semelle responde no WhatsApp para combinar o pagamento. Não pedimos dados de cartão neste site."}
       </p>
 
       <div className="mt-8 border border-border bg-card">

@@ -105,7 +105,7 @@ export function ProductDetail({ product }: { product: Product }) {
     })
     localStorage.setItem(key, JSON.stringify(current))
     setAlertContact("")
-    toast.success("Aviso anotado. A Semelle chama quando voltar.")
+    toast.success("Aviso anotado. A Use Semelle chama quando voltar.")
   }
 
   return (

@@ -11,7 +11,7 @@ export function SiteFooter() {
           <p className="text-[0.62rem] tracking-[0.28em] uppercase opacity-70">
             {store.tagline}
           </p>
-          <p className="font-heading mt-1 text-4xl italic">semelle</p>
+          <p className="font-heading mt-1 text-4xl italic">use semelle</p>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-primary-foreground/80">
             Calçados femininos em {store.city}. Scarpins, rasteiras e papetes
             escolhidos para quem quer elegância com o pé no chão.
@@ -46,7 +46,7 @@ export function SiteFooter() {
           <ul className="mt-3 space-y-2 text-sm">
             <li>
               <Link href="/sobre" className="hover:underline">
-                Sobre a Semelle
+                Sobre a Use Semelle
               </Link>
             </li>
             <li>

@@ -3,7 +3,7 @@ import { CheckoutForm } from "@/components/checkout-form"
 
 export const metadata: Metadata = {
   title: "Fechar pedido",
-  description: "Reserve seu par na Semelle. A confirmação e o PIX seguem pelo WhatsApp.",
+  description: "Reserve seu par na Use Semelle. A confirmação e o PIX seguem pelo WhatsApp.",
 }
 
 export default function CheckoutPage() {

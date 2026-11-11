@@ -4,7 +4,7 @@ import { formatBRL } from "@/lib/format"
 
 export const metadata: Metadata = {
   title: "Trocas e prazos",
-  description: "Prazos de envio, retirada em Brasília e troca em 7 dias na Semelle.",
+  description: "Prazos de envio, retirada em Brasília e troca em 7 dias na Use Semelle.",
 }
 
 const blocks = [
@@ -22,7 +22,7 @@ const blocks = [
   },
   {
     title: "Pagamento",
-    text: "Este site não cobra cartão e não guarda dados de pagamento. A chave PIX é enviada pela Semelle no WhatsApp, só depois da conferência de estoque.",
+    text: "Este site não cobra cartão e não guarda dados de pagamento. A chave PIX é enviada pela Use Semelle no WhatsApp, só depois da conferência de estoque.",
   },
 ]
 

@@ -1,6 +1,6 @@
-# Semelle Calçados
+# Use Semelle Calçados
 
-Loja da [Semelle](https://www.instagram.com/usesemelle/) — calçados femininos em Brasília. A vitrine reúne papetes, rasteiras, saltos, tênis e botas das linhas Vizzano, Beira Rio, Modare, Moleca, Activitta e Aurora.
+Loja da [Use Semelle](https://www.instagram.com/usesemelle/) — calçados femininos em Brasília. A vitrine reúne papetes, rasteiras, saltos, tênis e botas das linhas Vizzano, Beira Rio, Modare, Moleca, Activitta e Aurora.
 
 O pedido é reservado no site. A confirmação de estoque e o PIX acontecem no Instagram. Nenhum cartão é cobrado aqui.
 
@@ -42,4 +42,4 @@ As fotos dos anúncios são as do catálogo da Aurora.
 
 ## Pedidos
 
-A sacola e os pedidos ficam no navegador de quem compra (`localStorage`). Não há painel de admin nem gateway de pagamento. No fim do checkout, a cliente copia o resumo e envia no direct @usesemelle.
+A sacola e os pedidos ficam no navegador de quem compra (`localStorage`). Não há painel de admin nem gateway de pagamento. No fim do checkout, o WhatsApp abre com o resumo do pedido preenchido para a Use Semelle.

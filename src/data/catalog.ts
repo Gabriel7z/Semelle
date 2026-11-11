@@ -1,8 +1,8 @@
 import catalogo from "@/data/vitrine.json"
 
 export const store = {
-  name: "Semelle",
-  legalName: "Semelle Calçados",
+  name: "Use Semelle",
+  legalName: "Use Semelle Calçados",
   tagline: "O par perfeito",
   city: "Brasília",
   state: "DF",

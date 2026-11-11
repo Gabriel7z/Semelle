@@ -169,7 +169,7 @@ export function CheckoutForm() {
           </p>
           <h1 className="font-heading mt-2 text-4xl text-primary">Seus dados</h1>
           <p className="mt-2 max-w-lg text-sm text-muted-foreground">
-            O site não cobra. A Semelle confirma o estoque do número e combina o PIX pelo WhatsApp {store.whatsappDisplay}.
+            O site não cobra. A Use Semelle confirma o estoque do número e combina o PIX pelo WhatsApp {store.whatsappDisplay}.
           </p>
         </div>
 
@@ -243,7 +243,7 @@ export function CheckoutForm() {
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">
-              A retirada é em Brasília. Depois do pedido, a Semelle combina o horário pelo WhatsApp.
+              A retirada é em Brasília. Depois do pedido, a Use Semelle combina o horário pelo WhatsApp.
             </p>
           )}
         </fieldset>
