@@ -1,6 +1,6 @@
 # Use Semelle Calçados
 
-Loja da [Use Semelle](https://www.instagram.com/usesemelle/) — calçados femininos em Brasília. A vitrine reúne papetes, rasteiras, saltos, tênis e botas das linhas Vizzano, Beira Rio, Modare, Moleca, Activitta e Aurora.
+Loja da [Use Semelle](https://www.instagram.com/usesemelle/) — calçados femininos em Brasília. A vitrine reúne papetes, rasteiras, saltos, tênis e botas de marcas selecionadas como Vizzano, Beira Rio, Modare e Moleca.
 
 O pedido é reservado no site. A confirmação de estoque e o PIX acontecem no WhatsApp. Nenhum cartão é cobrado aqui.
 
@@ -27,7 +27,7 @@ O mesmo catálogo sai como JSON, com o custo, sem a margem. O build grava os arq
 
 ```bash
 curl https://gabriel7z.github.io/Semelle/api/fornecedor/produtos.json
-curl https://gabriel7z.github.io/Semelle/api/fornecedor/produtos/flat-bloom-nude-aurora-3483111.json
+curl https://gabriel7z.github.io/Semelle/api/fornecedor/produtos/bota-cano-curto-cafe-beira-rio-2014725.json
 ```
 
 A resposta traz o custo do fornecedor, sem a margem.
