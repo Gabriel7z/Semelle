@@ -14,7 +14,7 @@ const blocks = [
   },
   {
     title: "Retirada",
-    text: "Quem está em Brasília pode retirar. O horário é combinado pelo Instagram depois que o pedido é confirmado e, no PIX, depois que o pagamento é reconhecido.",
+    text: "Quem está em Brasília pode retirar. O horário é combinado pelo WhatsApp depois que o pedido é confirmado e, no PIX, depois que o pagamento é reconhecido.",
   },
   {
     title: "Troca",
@@ -22,7 +22,7 @@ const blocks = [
   },
   {
     title: "Pagamento",
-    text: "Este site não cobra cartão e não guarda dados de pagamento. A chave PIX é enviada pela Semelle no Instagram, só depois da conferência de estoque.",
+    text: "Este site não cobra cartão e não guarda dados de pagamento. A chave PIX é enviada pela Semelle no WhatsApp, só depois da conferência de estoque.",
   },
 ]
 
@@ -42,7 +42,7 @@ export default function ExchangesPage() {
         ))}
       </div>
       <p className="mt-6 text-sm">
-        Dúvida de número? Chame {store.handle} antes de reservar.
+        Dúvida de número? Chame no WhatsApp {store.whatsappDisplay} antes de reservar.
       </p>
     </article>
   )

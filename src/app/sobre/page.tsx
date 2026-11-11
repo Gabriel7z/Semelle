@@ -21,10 +21,10 @@ export default function AboutPage() {
           A Semelle é uma loja de calçados femininos em Brasília. O nome, em francês, é a sola — a parte que encontra o chão. A proposta cabe numa frase que a própria loja usa: elegância e conforto no mesmo pé.
         </p>
         <p>
-          A coleção reúne os pares femininos da Vizzano, Beira Rio, Modare, Moleca, Activitta e da linha Aurora. O preço na vitrine é o da Semelle. O pedido continua reservado no site e confirmado no Instagram {store.handle}.
+          A coleção reúne os pares femininos da Vizzano, Beira Rio, Modare, Moleca, Activitta e da linha Aurora. O preço na vitrine é o da Semelle. O pedido continua reservado no site e confirmado no WhatsApp {store.whatsappDisplay}.
         </p>
         <p>
-          O pedido é reservado aqui e confirmado no direct. A Semelle confere o número, envia o PIX e só então separa o par. Quem está em Brasília pode retirar; o restante do país recebe em casa.
+          O pedido é reservado aqui e confirmado no WhatsApp. A Semelle confere o número, envia o PIX e só então separa o par. Quem está em Brasília pode retirar; o restante do país recebe em casa.
         </p>
       </div>
       <div className="mt-8 flex flex-wrap gap-3">

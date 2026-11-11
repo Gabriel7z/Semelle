@@ -26,8 +26,8 @@ const steps = [
   },
   {
     n: "03",
-    title: "Confirme no Instagram",
-    text: "A Semelle confere o estoque e envia o PIX, ou combina a retirada em Brasília.",
+    title: "Confirme no WhatsApp",
+    text: "A Semelle recebe o pedido, confere o estoque e envia o PIX, ou combina a retirada em Brasília.",
   },
 ]
 
@@ -188,7 +188,7 @@ export default function HomePage() {
       <section className="mx-auto flex max-w-6xl flex-col items-start gap-4 px-4 py-16 sm:px-6">
         <h2 className="font-heading text-4xl text-primary">Frete e retirada</h2>
         <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
-          Compras acima de {formatBRL(store.freeShippingCents)} para Brasília saem sem frete. O restante do país segue com uma taxa fixa de envio, e quem está na cidade pode retirar — o horário é combinado no Instagram.
+          Compras acima de {formatBRL(store.freeShippingCents)} para Brasília saem sem frete. O restante do país segue com uma taxa fixa de envio, e quem está na cidade pode retirar — o horário é combinado no WhatsApp.
         </p>
         <Link href="/trocas" className="text-sm underline underline-offset-4">
           Ver prazos e trocas

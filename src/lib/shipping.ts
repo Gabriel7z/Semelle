@@ -56,7 +56,7 @@ export function quoteShipping(
     return {
       price: 0,
       label: "Retirada em Brasília",
-      days: "Horário combinado pelo Instagram",
+      days: "Horário combinado pelo WhatsApp",
       zone: "retirada",
     }
   }

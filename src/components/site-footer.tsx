@@ -75,13 +75,21 @@ export function SiteFooter() {
             <br />
             Frete grátis na cidade acima de {formatBRL(store.freeShippingCents)}.
             <br />
-            Pedidos confirmados pelo Instagram.
+            Pedidos confirmados pelo WhatsApp.
           </p>
+          <a
+            href={store.whatsapp}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-4 block text-sm hover:underline"
+          >
+            WhatsApp {store.whatsappDisplay}
+          </a>
           <a
             href={store.instagram}
             target="_blank"
             rel="noreferrer"
-            className="mt-4 inline-flex items-center gap-2 text-sm hover:underline"
+            className="mt-2 inline-flex items-center gap-2 text-sm hover:underline"
           >
             <InstagramIcon className="size-4" />
             {store.handle}

@@ -101,3 +101,8 @@ export function formatOrderText(order: Order) {
   if (order.note) lines.push("", `Obs.: ${order.note}`)
   return lines.join("\n")
 }
+
+export function whatsappOrderUrl(text: string) {
+  const params = new URLSearchParams({ text })
+  return `${store.whatsapp}?${params.toString()}`
+}

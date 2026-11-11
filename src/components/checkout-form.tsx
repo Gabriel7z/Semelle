@@ -2,7 +2,6 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useCart } from "@/components/cart-provider"
 import { Button } from "@/components/ui/button"
@@ -11,14 +10,13 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { store } from "@/data/catalog"
 import { digits, formatBRL, maskCep, maskPhone } from "@/lib/format"
-import { formatOrderText, newOrderId, saveOrder, type Order } from "@/lib/orders"
+import { formatOrderText, newOrderId, saveOrder, type Order, whatsappOrderUrl } from "@/lib/orders"
 import { lookupCep, quoteShipping } from "@/lib/shipping"
 import { cn } from "cn"
 
 type FieldErrors = Partial<Record<string, string>>
 
 export function CheckoutForm() {
-  const router = useRouter()
   const { lines, subtotal, clear, ready } = useCart()
   const [name, setName] = useState("")
   const [whatsapp, setWhatsapp] = useState("")
@@ -138,7 +136,7 @@ export function CheckoutForm() {
     const text = formatOrderText(order)
     sessionStorage.setItem(`semelle-order-text-${order.id}`, text)
     clear()
-    router.push(`/pedido?id=${encodeURIComponent(order.id)}`)
+    window.location.href = whatsappOrderUrl(text)
   }
 
   if (!ready) {
@@ -171,7 +169,7 @@ export function CheckoutForm() {
           </p>
           <h1 className="font-heading mt-2 text-4xl text-primary">Seus dados</h1>
           <p className="mt-2 max-w-lg text-sm text-muted-foreground">
-            O site não cobra. A Semelle confirma o estoque do número e combina o PIX pelo Instagram {store.handle}.
+            O site não cobra. A Semelle confirma o estoque do número e combina o PIX pelo WhatsApp {store.whatsappDisplay}.
           </p>
         </div>
 
@@ -245,7 +243,7 @@ export function CheckoutForm() {
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">
-              A retirada é em Brasília. Depois do pedido, a Semelle combina o horário pelo Instagram.
+              A retirada é em Brasília. Depois do pedido, a Semelle combina o horário pelo WhatsApp.
             </p>
           )}
         </fieldset>
@@ -319,10 +317,10 @@ export function CheckoutForm() {
           </div>
         </dl>
         <Button type="submit" className="mt-5 h-11 w-full" disabled={submitting || (method === "entrega" && !quote)}>
-          {submitting ? "Reservando…" : "Reservar pedido"}
+          {submitting ? "Abrindo WhatsApp…" : "Enviar pedido no WhatsApp"}
         </Button>
         <p className="mt-3 text-center text-xs text-muted-foreground">
-          Você recebe o resumo para enviar no Instagram. Nada é cobrado agora.
+          O WhatsApp abre com o resumo do pedido preenchido. Nada é cobrado agora.
         </p>
       </aside>
     </form>
