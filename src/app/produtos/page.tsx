@@ -4,7 +4,7 @@ import { Catalog } from "@/components/catalog"
 
 export const metadata: Metadata = {
   title: "Coleção",
-  description: "Scarpins, rasteiras e papetes da Semelle Calçados, em Brasília.",
+  description: "Scarpins, rasteiras e papetes da Use Semelle Calçados, em Brasília.",
 }
 
 export default function ProductsPage() {

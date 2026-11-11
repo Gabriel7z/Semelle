@@ -1,14 +1,17 @@
 import catalogo from "@/data/vitrine.json"
 
 export const store = {
-  name: "Semelle",
-  legalName: "Semelle Calçados",
+  name: "Use Semelle",
+  legalName: "Use Semelle Calçados",
   tagline: "O par perfeito",
   city: "Brasília",
   state: "DF",
   instagram: "https://www.instagram.com/usesemelle/",
   handle: "@usesemelle",
   dm: "https://ig.me/m/usesemelle",
+  whatsappNumber: "556182857131",
+  whatsappDisplay: "(61) 8285-7131",
+  whatsapp: "https://wa.me/556182857131",
   freeShippingCents: 24900,
   dfShippingCents: 1490,
   brShippingCents: 2790,

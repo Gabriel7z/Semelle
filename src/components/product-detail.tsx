@@ -105,7 +105,7 @@ export function ProductDetail({ product }: { product: Product }) {
     })
     localStorage.setItem(key, JSON.stringify(current))
     setAlertContact("")
-    toast.success("Aviso anotado. A Semelle chama quando voltar.")
+    toast.success("Aviso anotado. A Use Semelle chama quando voltar.")
   }
 
   return (
@@ -203,7 +203,7 @@ export function ProductDetail({ product }: { product: Product }) {
                   <DialogTitle>Guia de tamanhos</DialogTitle>
                   <DialogDescription>
                     Medida aproximada do pé. Vizzano e Beira Rio podem variar um
-                    número. Na dúvida, chame no Instagram antes de fechar.
+                    número. Na dúvida, chame no WhatsApp antes de fechar.
                   </DialogDescription>
                 </DialogHeader>
                 <table className="w-full text-sm">

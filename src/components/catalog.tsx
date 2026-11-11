@@ -72,7 +72,7 @@ export function Catalog() {
         <p className="max-w-md text-sm text-muted-foreground">
           {activeCategory
             ? activeCategory.blurb
-            : "O que está no Instagram da Semelle, pronto para escolher cor e número."}
+            : "O que está no Instagram da Use Semelle, pronto para escolher cor e número."}
         </p>
       </div>
 

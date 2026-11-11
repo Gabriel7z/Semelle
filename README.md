@@ -1,8 +1,8 @@
-# Semelle Calçados
+# Use Semelle Calçados
 
-Loja da [Semelle](https://www.instagram.com/usesemelle/) — calçados femininos em Brasília. A vitrine reúne papetes, rasteiras, saltos, tênis e botas das linhas Vizzano, Beira Rio, Modare, Moleca, Activitta e Aurora.
+Loja da [Use Semelle](https://www.instagram.com/usesemelle/) — calçados femininos em Brasília. A vitrine reúne papetes, rasteiras, saltos, tênis e botas das linhas Vizzano, Beira Rio, Modare, Moleca, Activitta e Aurora.
 
-O pedido é reservado no site. A confirmação de estoque e o PIX acontecem no Instagram. Nenhum cartão é cobrado aqui.
+O pedido é reservado no site. A confirmação de estoque e o PIX acontecem no WhatsApp. Nenhum cartão é cobrado aqui.
 
 ## Rodar
 
@@ -21,7 +21,7 @@ Os anúncios vêm do catálogo público da [Aurora Calçados](https://auroracalc
 
 O GitHub Actions lê esse catálogo a cada 30 minutos. Se preço ou estoque mudou, grava o arquivo novo e publica o site de novo. A visita da cliente não consulta a Aurora na hora: o GitHub Pages só consegue mostrar o último retrato publicado. Dá para forçar uma leitura em Actions, no fluxo "Importar catálogo Aurora".
 
-A loja aplica a margem de `src/lib/margem.ts` (`MARGEM = 0.5`, ou seja, 50% em cima do custo). Um par de R$ 89,90 no fornecedor aparece na vitrine por R$ 134,85. O build grava essa vitrine em `src/data/vitrine.json`, já com o preço de venda e sem o custo.
+A loja aplica a margem de `src/lib/margem.ts` (`MARGEM = 0.55`, ou seja, 55% em cima do custo) e arredonda o preço final para terminar em `,99`. Um par de R$ 89,90 no fornecedor aparece na vitrine por R$ 139,99. O build grava essa vitrine em `src/data/vitrine.json`, já com o preço de venda e sem o custo.
 
 O mesmo catálogo sai como JSON, com o custo, sem a margem. O build grava os arquivos em `public/api/fornecedor` (`npm run api`). No GitHub Pages:
 
@@ -36,10 +36,14 @@ Frete:
 
 - Brasília (CEP 70000-000 a 73699-999), grátis acima de R$ 249; abaixo disso, R$ 14,90
 - Restante do Brasil: R$ 27,90
-- Retirada em Brasília: combinada pelo Instagram
+- Retirada em Brasília: combinada pelo WhatsApp
+
+Promoção:
+
+- Primeira compra no site tem 20% de desconto no subtotal, somente para pagamento à vista no PIX
 
 As fotos dos anúncios são as do catálogo da Aurora.
 
 ## Pedidos
 
-A sacola e os pedidos ficam no navegador de quem compra (`localStorage`). Não há painel de admin nem gateway de pagamento. No fim do checkout, a cliente copia o resumo e envia no direct @usesemelle.
+A sacola e os pedidos ficam no navegador de quem compra (`localStorage`). Não há painel de admin nem gateway de pagamento. No fim do checkout, o WhatsApp abre com o resumo do pedido preenchido para a Use Semelle.

@@ -7,7 +7,7 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { store } from "@/data/catalog"
 import { formatBRL, formatWhen } from "@/lib/format"
-import { formatOrderText, getOrder, type Order } from "@/lib/orders"
+import { formatOrderText, getOrder, type Order, whatsappOrderUrl } from "@/lib/orders"
 
 export function OrderView() {
   const id = useSearchParams().get("id") ?? ""
@@ -19,11 +19,10 @@ export function OrderView() {
 
   async function copy() {
     if (!order) return
-    const cached = sessionStorage.getItem(`semelle-order-text-${order.id}`)
-    const text = cached || formatOrderText(order)
+    const text = getOrderText(order)
     try {
       await navigator.clipboard.writeText(text)
-      toast.success("Resumo copiado. Cole no Instagram.")
+      toast.success("Resumo copiado. Cole no WhatsApp.")
     } catch {
       toast.error("Não foi possível copiar. Selecione o texto do pedido.")
     }
@@ -61,8 +60,8 @@ export function OrderView() {
       </p>
       <p className="mt-5 leading-relaxed">
         {order.payment === "pix"
-          ? "A Semelle confere o número e envia a chave PIX pelo Instagram. O par só segue para separação depois do pagamento."
-          : "A Semelle responde no Instagram para combinar o pagamento. Não pedimos dados de cartão neste site."}
+          ? "A Use Semelle confere o número e envia a chave PIX pelo WhatsApp. O par só segue para separação depois do pagamento."
+          : "A Use Semelle responde no WhatsApp para combinar o pagamento. Não pedimos dados de cartão neste site."}
       </p>
 
       <div className="mt-8 border border-border bg-card">
@@ -80,6 +79,12 @@ export function OrderView() {
           ))}
         </ul>
         <dl className="space-y-1 border-t border-border px-4 py-4 text-sm">
+          {order.discountPrice ? (
+            <div className="flex justify-between text-primary">
+              <dt>{order.discountLabel ?? "Desconto"}</dt>
+              <dd>-{formatBRL(order.discountPrice)}</dd>
+            </div>
+          ) : null}
           <div className="flex justify-between">
             <dt>Frete</dt>
             <dd>{order.shippingPrice === 0 ? "Grátis" : formatBRL(order.shippingPrice)}</dd>
@@ -103,15 +108,24 @@ export function OrderView() {
           variant="outline"
           className="h-11"
           render={
-            <a href={store.dm} target="_blank" rel="noreferrer" />
+            <a
+              href={whatsappOrderUrl(getOrderText(order))}
+              target="_blank"
+              rel="noreferrer"
+            />
           }
         >
-          Enviar no Instagram
+          Enviar no WhatsApp
         </Button>
       </div>
       <p className="mt-4 text-xs text-muted-foreground">
-        Abra o direct de {store.handle}, cole o resumo e aguarde a confirmação do estoque.
+        Envie para o WhatsApp {store.whatsappDisplay} e aguarde a confirmação do estoque.
       </p>
     </div>
   )
+}
+
+function getOrderText(order: Order) {
+  if (typeof window === "undefined") return formatOrderText(order)
+  return sessionStorage.getItem(`semelle-order-text-${order.id}`) || formatOrderText(order)
 }
