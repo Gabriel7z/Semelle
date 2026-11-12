@@ -89,7 +89,7 @@ export default function HomePage() {
               fill
               priority
               sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
+              className="object-contain"
             />
           </div>
         </div>
@@ -120,7 +120,7 @@ export default function HomePage() {
                   alt=""
                   fill
                   sizes="(min-width: 768px) 33vw, 100vw"
-                  className="object-cover transition duration-500 group-hover:scale-[1.03]"
+                  className="object-contain"
                 />
               </div>
               <h3 className="font-heading mt-3 text-3xl text-primary">{category.name}</h3>
@@ -138,7 +138,7 @@ export default function HomePage() {
               alt={quote ? `${quote.name} ${quote.brand}` : "Coleção Use Semelle"}
               fill
               sizes="(min-width: 768px) 40vw, 100vw"
-              className="object-cover"
+              className="object-contain"
             />
           </div>
           <div>
