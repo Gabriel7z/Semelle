@@ -73,6 +73,13 @@ export function unitsLeft(
   return product.stock[`${colorId}-${size}`] ?? 0
 }
 
+export function productHasSize(
+  product: { colors: { id: string }[]; stock: Record<string, number> },
+  size: string,
+) {
+  return product.colors.some((color) => unitsLeft(product, color.id, size) > 0)
+}
+
 export function relatedProducts(slug: string) {
   const current = getProduct(slug)
   if (!current) return products.slice(0, 3)
