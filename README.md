@@ -13,7 +13,7 @@ npm run dev
 
 Abra [http://localhost:3000](http://localhost:3000).
 
-A loja publicada fica em [https://gabriel7z.github.io/Semelle/](https://gabriel7z.github.io/Semelle/). Cada push na `main` gera o site estático e o GitHub Pages publica a pasta `out`.
+A loja publicada fica em [https://usesemelleloja.com.br](https://usesemelleloja.com.br). Cada push na `main` gera o site estático e o GitHub Pages publica a pasta `out`.
 
 ## Fornecedor e margem
 
@@ -26,8 +26,8 @@ A loja aplica a margem de `src/lib/margem.ts` (`MARGEM = 1.05`, ou seja, 105% em
 O mesmo catálogo sai como JSON, com o custo, sem a margem. O build grava os arquivos em `public/api/fornecedor` (`npm run api`). No GitHub Pages:
 
 ```bash
-curl https://gabriel7z.github.io/Semelle/api/fornecedor/produtos.json
-curl https://gabriel7z.github.io/Semelle/api/fornecedor/produtos/bota-cano-curto-cafe-beira-rio-2014725.json
+curl https://usesemelleloja.com.br/api/fornecedor/produtos.json
+curl https://usesemelleloja.com.br/api/fornecedor/produtos/bota-cano-curto-cafe-beira-rio-2014725.json
 ```
 
 A resposta traz o custo do fornecedor, sem a margem.

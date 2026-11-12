@@ -1,3 +1,3 @@
-/** Publicado em https://gabriel7z.github.io/Semelle */
-export const pagesBasePath = "/Semelle"
-export const pagesOrigin = "https://gabriel7z.github.io/Semelle"
+/** Publicado em https://usesemelleloja.com.br */
+export const pagesBasePath = ""
+export const pagesOrigin = "https://usesemelleloja.com.br"
