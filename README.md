@@ -41,6 +41,7 @@ Frete:
 Promoção:
 
 - Primeira compra no site tem 20% de desconto no subtotal, somente para pagamento à vista no PIX
+- Pares com preço de vitrine a partir de R$ 300 aparecem com o valor cheio riscado e saem por R$ 249,99
 
 As fotos dos anúncios são as do catálogo da Aurora.
 

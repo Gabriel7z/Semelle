@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/sheet"
 import { categories, store } from "@/data/catalog"
 import { products } from "@/lib/loja"
+import { PriceTag } from "@/components/price-tag"
 import { formatBRL } from "@/lib/format"
 import { cn } from "cn"
 
@@ -190,7 +191,7 @@ export function SiteHeader() {
                         {product.brand}
                       </span>
                     </span>
-                    <span className="text-sm">{formatBRL(product.price)}</span>
+                    <PriceTag price={product.price} compareAt={product.compareAt} />
                   </Link>
                 </li>
               ))
