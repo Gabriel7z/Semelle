@@ -76,7 +76,7 @@ export function CheckoutForm() {
       ? quoteShipping(cep, subtotal, method)
       : null
   const shippingPrice = quote?.price ?? 0
-  const pixDiscount = firstPixDiscountCents(subtotal, firstOrder && payment === "pix")
+  const pixDiscount = firstPixDiscountCents(lines, firstOrder && payment === "pix")
   const total = subtotal - pixDiscount + (quote ? shippingPrice : 0)
 
   function validate() {
@@ -137,7 +137,7 @@ export function CheckoutForm() {
         qty: line.qty,
       })),
       subtotal,
-      discountLabel: pixDiscount ? "Primeira compra no site, à vista no PIX" : undefined,
+      discountLabel: pixDiscount ? "Primeira compra no PIX, só nos pares fora da promoção" : undefined,
       discountPrice: pixDiscount || undefined,
       total: subtotal - pixDiscount + quote.price,
     }
@@ -261,7 +261,7 @@ export function CheckoutForm() {
           <legend className="text-sm font-medium">Pagamento</legend>
           {firstOrder ? (
             <p className="border border-gold/40 bg-gold/10 px-3 py-2 text-sm text-primary">
-              Primeira compra no site: 20% de desconto à vista no PIX.
+              Primeira compra no PIX: 20% só nos pares fora da promoção. Itens em promoção não entram nesse desconto.
             </p>
           ) : null}
           <div className="grid gap-2 sm:grid-cols-2">
@@ -315,9 +315,13 @@ export function CheckoutForm() {
               <dt>Desconto PIX 1ª compra</dt>
               <dd>-{formatBRL(pixDiscount)}</dd>
             </div>
+          ) : firstOrder && payment === "pix" ? (
+            <p className="text-xs text-muted-foreground">
+              Os itens em promoção não entram no desconto de 20%.
+            </p>
           ) : firstOrder ? (
             <p className="text-xs text-muted-foreground">
-              Selecione PIX para aplicar 20% de desconto na primeira compra.
+              Selecione PIX para aplicar 20% nos pares fora da promoção.
             </p>
           ) : null}
           <div className="flex justify-between">
