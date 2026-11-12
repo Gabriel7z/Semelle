@@ -1,6 +1,6 @@
 import { pagesBasePath } from "./site"
 
-/** Prefixa as fotos com /Semelle no site publicado. O GitHub Pages ignora o ?w=. */
+/** No domínio próprio as fotos ficam na raiz. O GitHub Pages ignora o ?w=. */
 export default function imageLoader({
   src,
   width,
