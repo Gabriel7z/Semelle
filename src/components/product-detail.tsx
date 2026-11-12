@@ -15,6 +15,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { PriceTag } from "@/components/price-tag"
 import { shoeSizes, unitsLeft } from "@/data/catalog"
 import type { Product } from "@/lib/loja"
 import { formatBRL, installmentLabel, maskCep } from "@/lib/format"
@@ -155,7 +156,9 @@ export function ProductDetail({ product }: { product: Product }) {
         <h1 className="font-heading mt-2 text-3xl break-words text-primary sm:text-5xl">
           {product.name}
         </h1>
-        <p className="mt-4 font-heading text-3xl">{formatBRL(product.price)}</p>
+        <div className="mt-4">
+          <PriceTag price={product.price} compareAt={product.compareAt} size="lg" />
+        </div>
         <p className="text-sm text-muted-foreground">{installmentLabel(product.price)}</p>
         <p className="mt-5 text-base leading-relaxed">{product.description}</p>
         <blockquote className="mt-4 border-l-2 border-gold pl-4 text-sm text-muted-foreground italic">
@@ -353,7 +356,7 @@ export function ProductDetail({ product }: { product: Product }) {
           <div className="mx-auto flex max-w-6xl items-center gap-2">
             <div className="min-w-0">
               <p className="truncate text-xs text-muted-foreground">{product.brand}</p>
-              <p className="font-medium">{formatBRL(product.price)}</p>
+              <PriceTag price={product.price} compareAt={product.compareAt} />
             </div>
             <div className="ml-auto flex h-11 items-center border border-border">
               <button

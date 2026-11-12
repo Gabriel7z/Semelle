@@ -3,7 +3,7 @@ import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { categoryName } from "@/data/catalog"
 import type { Product } from "@/lib/loja"
-import { formatBRL } from "@/lib/format"
+import { PriceTag } from "@/components/price-tag"
 
 export function ProductCard({ product }: { product: Product }) {
   const image = product.colors[0]?.images[0]
@@ -33,7 +33,7 @@ export function ProductCard({ product }: { product: Product }) {
           <h3 className="line-clamp-2 font-heading text-lg leading-tight text-primary group-hover:underline sm:text-xl">
             {product.name}
           </h3>
-          <p className="text-sm">{formatBRL(product.price)}</p>
+          <PriceTag price={product.price} compareAt={product.compareAt} />
         </div>
         <div className="mt-2 flex gap-1.5">
           {product.colors.map((color) => (

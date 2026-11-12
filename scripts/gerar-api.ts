@@ -1,7 +1,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 import { catalogoFornecedor } from "../src/lib/fornecedor"
-import { precoVenda } from "../src/lib/margem"
+import { precoVitrine } from "../src/lib/margem"
 import { pagesOrigin } from "../src/lib/site"
 
 type Bruto = {
@@ -34,7 +34,7 @@ const vitrine = {
     name: product.name,
     brand: product.brand,
     category: product.category,
-    price: precoVenda(product.cost),
+    ...precoVitrine(product.cost),
     reference: product.reference,
     badge: product.badge,
     featured: product.featured,

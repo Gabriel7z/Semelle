@@ -34,6 +34,7 @@ export type Product = {
   brand: string
   category: CategoryId
   price: number
+  compareAt?: number
   reference?: string | null
   badge?: string
   featured?: boolean
