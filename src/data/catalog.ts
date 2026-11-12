@@ -43,7 +43,8 @@ export type Product = {
   details: string[]
   colors: Colorway[]
   sizes: string[]
-  stock: Record<string, number>
+  /** null = disponível, quantidade desconhecida. Número positivo = quantidade real. */
+  stock: Record<string, number | null>
   instagram?: string
 }
 
@@ -65,19 +66,50 @@ export function getProduct(slug: string) {
   return products.find((product) => product.slug === slug)
 }
 
+/** Teto por número quando a Aurora não informa a quantidade. Não é estoque. */
+export const UNKNOWN_STOCK_ORDER_CAP = 10
+
 export function unitsLeft(
-  product: { stock: Record<string, number> },
+  product: { stock: Record<string, number | null> },
   colorId: string,
   size: string,
-) {
-  return product.stock[`${colorId}-${size}`] ?? 0
+): number | null {
+  const key = `${colorId}-${size}`
+  if (!(key in product.stock)) return 0
+  const qty = product.stock[key]
+  if (qty === null) return null
+  if (typeof qty === "number" && Number.isFinite(qty) && qty > 0) return Math.floor(qty)
+  return 0
 }
 
 export function productHasSize(
-  product: { colors: { id: string }[]; stock: Record<string, number> },
+  product: { colors: { id: string }[]; stock: Record<string, number | null> },
   size: string,
 ) {
-  return product.colors.some((color) => unitsLeft(product, color.id, size) > 0)
+  return product.colors.some((color) => {
+    const qty = unitsLeft(product, color.id, size)
+    return qty === null || qty > 0
+  })
+}
+
+export function productIsSellable(product: {
+  colors: { id: string }[]
+  sizes: string[]
+  stock: Record<string, number | null>
+}) {
+  return product.sizes.some((size) => productHasSize(product, size))
+}
+
+/** Aviso de poucas unidades só com quantidade real informada pela Aurora. */
+export function lowStockCount(qty: number | null): number | null {
+  if (typeof qty !== "number" || qty < 1 || qty > 2) return null
+  return qty
+}
+
+export function maxPurchasable(qty: number | null) {
+  if (qty === null) return UNKNOWN_STOCK_ORDER_CAP
+  if (qty > 0) return qty
+  return 0
 }
 
 export function relatedProducts(slug: string) {

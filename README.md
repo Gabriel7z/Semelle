@@ -17,20 +17,13 @@ A loja publicada fica em [https://usesemelleloja.com.br](https://usesemelleloja.
 
 ## Fornecedor e margem
 
-Os anúncios vêm do catálogo público da [Aurora Calçados](https://auroracalcados.com.br/), o atacado em Novo Gama. `node scripts/importar-aurora.mjs` grava `src/data/aurora.json`. O campo `cost` é o preço de custo, em centavos.
+Os anúncios vêm do catálogo público da [Aurora Calçados](https://auroracalcados.com.br/), o atacado em Novo Gama. `node scripts/importar-aurora.mjs` grava `src/data/aurora.json`. O campo `cost` é o preço de custo, em centavos, e fica só nesse arquivo de trabalho. O site publicado não leva esse valor.
 
-O GitHub Actions lê esse catálogo a cada 30 minutos. Se preço ou estoque mudou, grava o arquivo novo e publica o site de novo. A visita da cliente não consulta a Aurora na hora: o GitHub Pages só consegue mostrar o último retrato publicado. Dá para forçar uma leitura em Actions, no fluxo "Importar catálogo Aurora".
+O GitHub Actions lê o catálogo várias vezes por hora. O cron usa os minutos 7, 22, 37 e 52 para fugir do congestionamento de :00 e :30. Cada execução também dispara a próxima cerca de 10 minutos depois, porque o agendamento do GitHub sozinho deixa buracos de várias horas. Se preço ou estoque mudou, o fluxo publica o site e só então grava o arquivo no repositório. A visita da cliente não consulta a Aurora na hora: o GitHub Pages só consegue mostrar o último retrato publicado. Dá para forçar uma leitura em Actions, no fluxo "Importar catálogo Aurora".
 
-A loja aplica a margem de `src/lib/margem.ts` (`MARGEM = 1.05`, ou seja, 105% em cima do custo) e arredonda o preço final para terminar em `,99`. Um par de R$ 89,90 no fornecedor aparece na vitrine por R$ 184,99. O build grava essa vitrine em `src/data/vitrine.json`, já com o preço de venda e sem o custo.
+A loja aplica a margem de `src/lib/margem.ts` (`MARGEM = 1.05`, ou seja, 105% em cima do custo) e arredonda o preço final para terminar em `,99`. Um par de R$ 89,90 no fornecedor aparece na vitrine por R$ 184,99. O build grava essa vitrine em `src/data/vitrine.json`, já com o preço de venda e sem o custo. Não existe mais JSON público em `/api/fornecedor`.
 
-O mesmo catálogo sai como JSON, com o custo, sem a margem. O build grava os arquivos em `public/api/fornecedor` (`npm run api`). No GitHub Pages:
-
-```bash
-curl https://usesemelleloja.com.br/api/fornecedor/produtos.json
-curl https://usesemelleloja.com.br/api/fornecedor/produtos/bota-cano-curto-cafe-beira-rio-2014725.json
-```
-
-A resposta traz o custo do fornecedor, sem a margem.
+O número só entra na vitrine se a Aurora mandar a variação. `disponibilidade` diz se vende. Se `estoque` vier maior que zero, essa é a quantidade. Se o número está disponível e o estoque vem 0, a página oferece o número sem avisar "últimas unidades". Se a numeração não vier, o anúncio fica de fora.
 
 Frete:
 

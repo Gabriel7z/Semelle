@@ -18,7 +18,8 @@
 /.next/
 /out/
 
-# JSON do fornecedor e vitrine sem custo, gerados por scripts/gerar-api.ts
+# Vitrine sem custo, gerada por scripts/gerar-api.ts.
+# public/api não pode voltar: o custo do fornecedor era servido dali.
 /public/api/
 /src/data/vitrine.json
 

@@ -1,8 +1,6 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
+import { readFileSync, rmSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
-import { catalogoFornecedor } from "../src/lib/fornecedor"
 import { precoVitrine } from "../src/lib/margem"
-import { pagesOrigin } from "../src/lib/site"
 
 type Bruto = {
   categories: { id: string; name: string; blurb: string; image: string }[]
@@ -20,7 +18,7 @@ type Bruto = {
     details: string[]
     colors: { id: string; name: string; swatch: string; images: string[] }[]
     sizes: string[]
-    stock: Record<string, number>
+    stock: Record<string, number | null>
     instagram?: string
   }[]
 }
@@ -29,35 +27,38 @@ const bruto = JSON.parse(readFileSync(join(process.cwd(), "src/data/aurora.json"
 
 const vitrine = {
   categories: bruto.categories,
-  products: bruto.products.map((product) => ({
-    slug: product.slug,
-    name: product.name,
-    brand: product.brand,
-    category: product.category,
-    ...precoVitrine(product.cost),
-    reference: product.reference,
-    badge: product.badge,
-    featured: product.featured,
-    caption: product.caption,
-    description: product.description,
-    details: product.details,
-    colors: product.colors,
-    sizes: product.sizes,
-    stock: product.stock,
-    instagram: product.instagram,
-  })),
+  products: bruto.products.map((product) => {
+    const venda = precoVitrine(product.cost)
+    return {
+      slug: product.slug,
+      name: product.name,
+      brand: product.brand,
+      category: product.category,
+      price: venda.price,
+      ...(venda.compareAt ? { compareAt: venda.compareAt } : {}),
+      reference: product.reference,
+      badge: product.badge,
+      featured: product.featured,
+      caption: product.caption,
+      description: product.description,
+      details: product.details,
+      colors: product.colors,
+      sizes: product.sizes,
+      stock: product.stock,
+      instagram: product.instagram,
+    }
+  }),
+}
+
+for (const product of vitrine.products) {
+  if ("cost" in product || "precoCentavos" in product) {
+    throw new Error("A vitrine não pode carregar custo do fornecedor.")
+  }
 }
 
 writeFileSync(join(process.cwd(), "src/data/vitrine.json"), JSON.stringify(vitrine))
 
-const catalogo = catalogoFornecedor(pagesOrigin)
-const root = join(process.cwd(), "public", "api", "fornecedor")
-const porAnuncio = join(root, "produtos")
+// O JSON público antigo levava o custo do atacado. Não recriar.
+rmSync(join(process.cwd(), "public", "api"), { recursive: true, force: true })
 
-mkdirSync(porAnuncio, { recursive: true })
-
-writeFileSync(join(root, "produtos.json"), `${JSON.stringify(catalogo)}\n`)
-
-for (const anuncio of catalogo.anuncios) {
-  writeFileSync(join(porAnuncio, `${anuncio.slug}.json`), `${JSON.stringify(anuncio)}\n`)
-}
+console.log(`Vitrine pronta: ${vitrine.products.length} anúncios, sem custo do fornecedor.`)

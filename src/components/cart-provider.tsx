@@ -10,7 +10,7 @@ import {
   useState,
 } from "react"
 import { toast } from "sonner"
-import { unitsLeft } from "@/data/catalog"
+import { UNKNOWN_STOCK_ORDER_CAP, unitsLeft } from "@/data/catalog"
 import { getProduct } from "@/lib/loja"
 
 export type CartLine = {
@@ -41,6 +41,21 @@ type CartContextValue = {
 
 const CartContext = createContext<CartContextValue | null>(null)
 const STORAGE_KEY = "semelle-cart"
+
+function blockedReason(nextQty: number, available: number | null) {
+  if (available === null) {
+    if (nextQty > UNKNOWN_STOCK_ORDER_CAP) {
+      return `Até ${UNKNOWN_STOCK_ORDER_CAP} pares deste número por pedido. A loja confirma a quantidade no WhatsApp.`
+    }
+    return null
+  }
+  if (nextQty > available) {
+    return available > 0
+      ? `Só temos ${available} neste número.`
+      : "Este número esgotou."
+  }
+  return null
+}
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([])
@@ -74,12 +89,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const current = linesRef.current
     const existing = current.find((item) => item.key === key)
     const nextQty = (existing?.qty ?? 0) + qty
-    if (nextQty > available) {
-      toast.error(
-        available > 0
-          ? `Só temos ${available} neste número.`
-          : "Este número esgotou.",
-      )
+    const reason = blockedReason(nextQty, available)
+    if (reason) {
+      toast.error(reason)
       return
     }
     const next = existing
@@ -100,9 +112,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const available = product
       ? unitsLeft(product, line.colorId, line.size)
       : line.qty
-    if (qty > available) {
-      toast.error(`Só temos ${available} neste número.`)
-      return
+    if (qty >= 1) {
+      const reason = blockedReason(qty, available)
+      if (reason) {
+        toast.error(reason)
+        return
+      }
     }
     const next =
       qty < 1
