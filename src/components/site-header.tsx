@@ -57,7 +57,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-md">
       <div className="bg-primary text-primary-foreground">
         <p className="mx-auto max-w-6xl px-4 py-2 text-center text-[0.72rem] tracking-wide sm:px-6">
-          Primeira compra no site: 20% off no PIX
+          1ª compra: 20% no PIX, exceto itens em promoção
           <span className="hidden sm:inline"> · Frete grátis para Brasília acima de {formatBRL(store.freeShippingCents)}</span>
         </p>
       </div>

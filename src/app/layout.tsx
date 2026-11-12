@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"
 import { Fraunces, Outfit } from "next/font/google"
 import { ThemeProvider } from "next-themes"
 import { CartSheet } from "@/components/cart-sheet"
+import { EntryNotice } from "@/components/entry-notice"
 import { CartProvider } from "@/components/cart-provider"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
@@ -57,6 +58,7 @@ export default function RootLayout({
               <SiteFooter />
             </div>
             <CartSheet />
+            <EntryNotice />
             <Toaster position="top-center" offset={88} duration={2800} />
           </CartProvider>
         </ThemeProvider>
