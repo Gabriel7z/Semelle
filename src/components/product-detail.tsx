@@ -120,7 +120,7 @@ export function ProductDetail({ product }: { product: Product }) {
               fill
               priority
               sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
+              className="object-contain p-4"
             />
           ) : null}
         </div>
@@ -137,7 +137,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 )}
                 aria-label={`Foto ${index + 1}`}
               >
-                <Image src={image} alt="" fill sizes="64px" className="object-cover" />
+                <Image src={image} alt="" fill sizes="64px" className="object-contain p-1" />
               </button>
             ))}
           </div>
