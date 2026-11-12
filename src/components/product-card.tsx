@@ -16,7 +16,7 @@ export function ProductCard({ product }: { product: Product }) {
             alt={`${product.name} ${product.brand}`}
             fill
             sizes="(min-width: 1024px) 25vw, 50vw"
-            className="object-cover transition duration-500 group-hover:scale-[1.03]"
+            className="object-contain p-3"
           />
         ) : null}
         {product.badge ? (

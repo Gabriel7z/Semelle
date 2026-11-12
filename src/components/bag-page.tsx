@@ -36,7 +36,7 @@ export function BagPage() {
         {lines.map((line) => (
           <li key={line.key} className="flex gap-3 py-4">
             <Link href={`/produtos/${line.slug}`} className="relative size-20 shrink-0 overflow-hidden bg-[#efe8dc] sm:size-24">
-              <Image src={line.image} alt="" fill sizes="96px" className="object-cover" />
+              <Image src={line.image} alt="" fill sizes="96px" className="object-contain p-1" />
             </Link>
             <div className="min-w-0 flex-1">
               <div className="flex items-start justify-between gap-3">

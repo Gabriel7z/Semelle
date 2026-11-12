@@ -67,7 +67,7 @@ export function CartSheet() {
                       alt=""
                       fill
                       sizes="80px"
-                      className="object-cover"
+                      className="object-contain p-1"
                     />
                   </Link>
                   <div className="min-w-0 flex-1">

@@ -293,7 +293,7 @@ export function CheckoutForm() {
           {lines.map((line) => (
             <li key={line.key} className="flex gap-3 text-sm">
               <div className="relative size-14 shrink-0 overflow-hidden bg-[#efe8dc]">
-                <Image src={line.image} alt="" fill sizes="56px" className="object-cover" />
+                <Image src={line.image} alt="" fill sizes="56px" className="object-contain p-1" />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="leading-tight">{line.name}</p>
