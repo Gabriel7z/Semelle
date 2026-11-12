@@ -17,6 +17,9 @@ const MARCAS = [
 
 const PULAR = /^(bolsas?|meias?)$/i
 
+let semNumeracao = 0
+let coresSemNumeracao = 0
+
 const IMAGENS_CATEGORIA = {
   rasteiras: "/products/rasteira-flor.jpg",
   flatforms: "https://arquivos.facilzap.app.br/produtos/1736773219_d463439d4546c50b9097.jpg.webp",
@@ -199,13 +202,18 @@ function linhaDo(produto, marcaId, marca) {
   return { id: slugify(nome) || "calcados", name: nome }
 }
 
+/**
+ * Disponibilidade da Aurora decide se o número vende.
+ * Número > 0 é quantidade real. null = disponível, quantidade desconhecida.
+ * Nunca inventar unidades.
+ */
 function quantidade(produto, variacao) {
   const id = String(variacao.id)
   const estoque = parseInt(produto.estoque?.[id], 10)
-  const disponivel = String(produto.disponibilidade?.[id] || "") === "1"
+  const disponivel = String(produto.disponibilidade?.[id] ?? "") === "1"
+  if (!disponivel) return 0
   if (Number.isFinite(estoque) && estoque > 0) return estoque
-  if (disponivel) return 3
-  return 0
+  return null
 }
 
 function listaVariacoes(produto) {
@@ -403,27 +411,18 @@ function normalizar(produto, marca, marcaId) {
     if (tamanho) grupos.get(id).sizes.set(tamanho, quantidade(produto, variacao))
   }
 
-  let colors = [...grupos.values()]
+  const vazias = [...grupos.values()].filter((color) => color.sizes.size === 0)
+  coresSemNumeracao += vazias.length
+  const colors = [...grupos.values()].filter((color) => color.sizes.size > 0)
   if (colors.length === 0) {
-    colors = [
-      {
-        id: slugify(corPeloNome(nome, marca)) || "unica",
-        name: corPeloNome(nome, marca),
-        swatch: amostra(corPeloNome(nome, marca)),
-        images: imagensProduto,
-        sizes: new Map(),
-      },
-    ]
+    semNumeracao += 1
+    console.warn(`Sem numeração na resposta da Aurora. Anúncio ignorado: ${produto.id} ${nome}`)
+    return null
   }
 
   const sizes = new Set()
   const stock = {}
   for (const color of colors) {
-    if (color.sizes.size === 0) {
-      for (const tamanho of ["33", "34", "35", "36", "37", "38", "39"]) {
-        color.sizes.set(tamanho, 3)
-      }
-    }
     for (const [tamanho, qtd] of color.sizes) {
       sizes.add(tamanho)
       stock[`${color.id}-${tamanho}`] = qtd
@@ -586,6 +585,13 @@ const categories = ordem.map((id) => {
     image: IMAGENS_CATEGORIA[id] || exemplo.colors[0].images[0],
   }
 })
+
+if (semNumeracao) {
+  console.warn(`Anúncios ignorados por falta de numeração: ${semNumeracao}`)
+}
+if (coresSemNumeracao) {
+  console.warn(`Cores ignoradas por falta de numeração: ${coresSemNumeracao}`)
+}
 
 if (products.length < 400) {
   console.error(`Catálogo curto demais (${products.length}). A vitrine atual foi mantida.`)

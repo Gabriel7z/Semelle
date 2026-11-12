@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { ProductCard } from "@/components/product-card"
 import { ProductDetail } from "@/components/product-detail"
-import { store } from "@/data/catalog"
+import { productIsSellable, store } from "@/data/catalog"
 import { getProduct, products, relatedProducts } from "@/lib/loja"
 import { formatBRL } from "@/lib/format"
 
@@ -46,7 +46,9 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
       "@type": "Offer",
       priceCurrency: "BRL",
       price: (product.price / 100).toFixed(2),
-      availability: "https://schema.org/InStock",
+      availability: productIsSellable(product)
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
       seller: { "@type": "Organization", name: store.legalName },
     },
   }

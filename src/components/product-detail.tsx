@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { PriceTag } from "@/components/price-tag"
-import { shoeSizes, store, unitsLeft } from "@/data/catalog"
+import { lowStockCount, maxPurchasable, shoeSizes, store, unitsLeft } from "@/data/catalog"
 import type { Product } from "@/lib/loja"
 import { formatBRL, installmentLabel, maskCep } from "@/lib/format"
 import { quoteShipping } from "@/lib/shipping"
@@ -45,6 +45,7 @@ export function ProductDetail({ product }: { product: Product }) {
   const images = color?.images ?? []
   const activePhoto = images[Math.min(photo, images.length - 1)] ?? images[0]
   const available = size && color ? unitsLeft(product, color.id, size) : null
+  const poucas = lowStockCount(available)
 
   const shippingPreview = useMemo(() => {
     const digits = cep.replace(/\D/g, "")
@@ -65,7 +66,7 @@ export function ProductDetail({ product }: { product: Product }) {
       return
     }
     const left = unitsLeft(product, color.id, size)
-    if (left < 1) {
+    if (left !== null && left < 1) {
       toast.error("Este número esgotou.")
       return
     }
@@ -245,7 +246,7 @@ export function ProductDetail({ product }: { product: Product }) {
                     "h-11 border text-sm",
                     selected && "border-primary bg-primary text-primary-foreground",
                     !selected && left === 0 && "text-muted-foreground line-through",
-                    !selected && left > 0 && "border-border hover:border-primary",
+                    !selected && left !== 0 && "border-border hover:border-primary",
                   )}
                 >
                   {item}
@@ -265,9 +266,9 @@ export function ProductDetail({ product }: { product: Product }) {
               Número {size} esgotado em {color?.name}.
             </p>
           ) : null}
-          {size && available !== null && available > 0 && available <= 2 ? (
+          {size && poucas !== null ? (
             <p className="mt-2 text-sm text-gold">
-              Últimas {available} no número {size}.
+              Últimas {poucas} no número {size}.
             </p>
           ) : null}
         </div>
@@ -303,7 +304,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 className="w-10"
                 aria-label="Aumentar"
                 onClick={() =>
-                  setQty((value) => Math.min(available && available > 0 ? available : 3, value + 1))
+                  setQty((value) => Math.min(maxPurchasable(available), value + 1))
                 }
               >
                 +
@@ -380,7 +381,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 className="w-10"
                 aria-label="Aumentar"
                 onClick={() =>
-                  setQty((value) => Math.min(available && available > 0 ? available : 3, value + 1))
+                  setQty((value) => Math.min(maxPurchasable(available), value + 1))
                 }
               >
                 +

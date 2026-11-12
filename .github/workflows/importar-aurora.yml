@@ -2,13 +2,22 @@ name: Importar catálogo Aurora
 
 on:
   schedule:
-    - cron: "*/30 * * * *"
+    # Fora de :00 e :30, quando a fila do GitHub Actions enche e o cron some
+    # por horas. Se o GitHub pular o horário, o job encadear dispara a próxima.
+    - cron: "7,22,37,52 * * * *"
   workflow_dispatch:
+    inputs:
+      encadear:
+        description: "Ao terminar, disparar a próxima leitura"
+        required: false
+        type: boolean
+        default: true
 
 permissions:
   contents: write
   pages: write
   id-token: write
+  actions: write
 
 concurrency:
   group: aurora-ao-vivo
@@ -17,8 +26,9 @@ concurrency:
 jobs:
   atualizar:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     outputs:
-      mudou: ${{ steps.publicar.outputs.mudou }}
+      mudou: ${{ steps.diff.outputs.mudou }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,26 +36,30 @@ jobs:
           node-version: 22
           cache: npm
       - run: node scripts/importar-aurora.mjs
-      - id: publicar
+      - id: diff
         run: |
-          git add src/data/aurora.json
-          if git diff --cached --quiet; then
+          if git diff --quiet -- src/data/aurora.json; then
             echo "mudou=false" >> "$GITHUB_OUTPUT"
           else
-            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Atualiza estoque e preços da Aurora."
-            git push
             echo "mudou=true" >> "$GITHUB_OUTPUT"
           fi
-      - if: steps.publicar.outputs.mudou == 'true'
+      - if: steps.diff.outputs.mudou == 'true'
         run: npm ci
-      - if: steps.publicar.outputs.mudou == 'true'
+      - if: steps.diff.outputs.mudou == 'true'
         run: npm run build
         env:
           NODE_OPTIONS: --max-old-space-size=4096
-      - if: steps.publicar.outputs.mudou == 'true'
+      - if: steps.diff.outputs.mudou == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: out
+      - if: steps.diff.outputs.mudou == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: aurora-json
+          path: src/data/aurora.json
+          retention-days: 1
+          if-no-files-found: error
 
   deploy:
     needs: atualizar
@@ -55,5 +69,46 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: aurora-json
+          path: src/data
       - id: deployment
         uses: actions/deploy-pages@v4
+      - name: Gravar catálogo depois da publicação
+        run: |
+          git add src/data/aurora.json
+          if git diff --cached --quiet; then
+            echo "O catálogo no repositório já era este."
+          else
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Atualiza estoque e preços da Aurora."
+            git push
+          fi
+
+  encadear:
+    needs: [atualizar, deploy]
+    if: >-
+      always() &&
+      (needs.atualizar.result == 'success' || needs.atualizar.result == 'failure') &&
+      (github.event_name != 'workflow_dispatch' || github.event.inputs.encadear != 'false')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Disparar a próxima leitura
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ATUAL: ${{ github.run_id }}
+          RAMO: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          echo "Aguarda 10 minutos. Se outra leitura já estiver na fila, esta corrente para."
+          sleep 600
+          outros=$(gh run list --workflow importar-aurora.yml --limit 30 --json databaseId,status \
+            --jq "map(select(.databaseId != ${ATUAL} and (.status == \"queued\" or .status == \"in_progress\" or .status == \"waiting\" or .status == \"pending\" or .status == \"requested\"))) | length")
+          if [ "${outros}" != "0" ]; then
+            echo "Já existe leitura na fila ou em andamento (${outros}). Não disparo outra."
+            exit 0
+          fi
+          gh workflow run importar-aurora.yml --ref "${RAMO}" -f encadear=true
+          echo "Próxima leitura disparada em ${RAMO}."
