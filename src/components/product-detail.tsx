@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { PriceTag } from "@/components/price-tag"
-import { shoeSizes, unitsLeft } from "@/data/catalog"
+import { shoeSizes, store, unitsLeft } from "@/data/catalog"
 import type { Product } from "@/lib/loja"
 import { formatBRL, installmentLabel, maskCep } from "@/lib/format"
 import { quoteShipping } from "@/lib/shipping"
@@ -253,6 +253,13 @@ export function ProductDetail({ product }: { product: Product }) {
               )
             })}
           </div>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Na dúvida entre 36 e 37, chame no{" "}
+            <a href={store.whatsapp} target="_blank" rel="noreferrer" className="underline">
+              WhatsApp
+            </a>{" "}
+            antes de reservar.
+          </p>
           {size && available === 0 ? (
             <p className="mt-2 text-sm text-destructive">
               Número {size} esgotado em {color?.name}.

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { ProductCard } from "@/components/product-card"
-import { categories, type CategoryId } from "@/data/catalog"
+import { categories, productHasSize, shoeSizes, type CategoryId } from "@/data/catalog"
 import { brands, products } from "@/lib/loja"
 import { cn } from "cn"
 
@@ -21,6 +21,9 @@ export function Catalog() {
   const router = useRouter()
   const category = params.get("categoria")
   const brand = params.get("marca")
+  const size = shoeSizes.includes(params.get("numero") as (typeof shoeSizes)[number])
+    ? params.get("numero")
+    : null
   const sort = params.get("ordem") ?? "destaque"
   const query = (params.get("q") ?? "").trim().toLowerCase()
 
@@ -28,6 +31,7 @@ export function Catalog() {
     let list = products.filter((product) => {
       if (category && product.category !== category) return false
       if (brand && product.brand !== brand) return false
+      if (size && !productHasSize(product, size)) return false
       if (query) {
         const haystack = `${product.name} ${product.brand} ${product.caption}`.toLowerCase()
         if (!haystack.includes(query)) return false
@@ -41,7 +45,7 @@ export function Catalog() {
       list = [...list].sort((a, b) => Number(b.featured) - Number(a.featured))
     }
     return list
-  }, [category, brand, sort, query])
+  }, [category, brand, size, sort, query])
 
   function update(key: string, value: string | null) {
     const next = new URLSearchParams(params.toString())
@@ -55,7 +59,7 @@ export function Catalog() {
 
   useEffect(() => {
     setShown(pageSize)
-  }, [category, brand, sort, query])
+  }, [category, brand, size, sort, query])
 
   const activeCategory = categories.find((item) => item.id === category)
   const page = visible.slice(0, shown)
@@ -98,6 +102,18 @@ export function Catalog() {
               key={item}
               active={brand === item}
               onClick={() => update("marca", brand === item ? null : item)}
+            >
+              {item}
+            </FilterChip>
+          ))}
+        </div>
+        <div className="-mx-4 flex items-center gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
+          <span className="shrink-0 text-sm text-muted-foreground">Número</span>
+          {shoeSizes.map((item) => (
+            <FilterChip
+              key={item}
+              active={size === item}
+              onClick={() => update("numero", size === item ? null : item)}
             >
               {item}
             </FilterChip>
