@@ -1,6 +1,21 @@
 import Link from "next/link"
 import { buttonVariants } from "@/components/ui/button"
+import { store } from "@/data/catalog"
+import { defaultShareImage } from "@/lib/seo"
 import { cn } from "cn"
+
+export const metadata = {
+  title: "Página não encontrada",
+  description: "O endereço não corresponde a uma página da Use Semelle.",
+  robots: { index: false, follow: true },
+  alternates: {},
+  openGraph: {
+    siteName: store.name,
+    locale: "pt_BR" as const,
+    type: "website" as const,
+    images: [defaultShareImage],
+  },
+}
 
 export default function NotFound() {
   return (

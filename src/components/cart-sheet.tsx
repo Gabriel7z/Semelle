@@ -63,7 +63,7 @@ export function CartSheet() {
                   >
                     <Image
                       src={line.image}
-                      alt=""
+                      alt={line.name}
                       fill
                       sizes="80px"
                       className="object-contain p-1"

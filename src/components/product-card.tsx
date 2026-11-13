@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { categoryName } from "@/data/catalog"
 import type { Product } from "@/lib/loja"
 import { PriceTag } from "@/components/price-tag"
+import { productLabel } from "@/lib/seo"
 
 export function ProductCard({ product }: { product: Product }) {
   const image = product.colors[0]?.images[0]
@@ -13,7 +14,7 @@ export function ProductCard({ product }: { product: Product }) {
         {image ? (
           <Image
             src={image}
-            alt={`${product.name} ${product.brand}`}
+            alt={productLabel(product)}
             fill
             sizes="(min-width: 1024px) 25vw, 50vw"
             className="object-contain p-3"
