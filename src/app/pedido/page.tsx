@@ -1,10 +1,13 @@
-import type { Metadata } from "next"
 import { Suspense } from "react"
 import { OrderView } from "@/components/order-view"
+import { pageMetadata } from "@/lib/seo"
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Pedido",
-}
+  description: "Resumo do pedido reservado na Use Semelle. A confirmação segue no WhatsApp.",
+  path: "/pedido",
+  index: false,
+})
 
 export default function OrderPage() {
   return (

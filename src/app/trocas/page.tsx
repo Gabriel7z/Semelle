@@ -1,11 +1,12 @@
-import type { Metadata } from "next"
 import { store } from "@/data/catalog"
 import { formatBRL } from "@/lib/format"
+import { pageMetadata } from "@/lib/seo"
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Trocas e prazos",
   description: "Prazos de envio, retirada em Brasília e troca em 7 dias na Use Semelle.",
-}
+  path: "/trocas",
+})
 
 const blocks = [
   {

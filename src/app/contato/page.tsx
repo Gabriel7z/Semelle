@@ -1,13 +1,14 @@
-import type { Metadata } from "next"
 import { InstagramIcon } from "@/components/instagram-icon"
 import { buttonVariants } from "@/components/ui/button"
 import { store } from "@/data/catalog"
+import { pageMetadata } from "@/lib/seo"
 import { cn } from "cn"
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Contato",
   description: "Fale com a Use Semelle Calçados pelo WhatsApp. Loja em Brasília.",
-}
+  path: "/contato",
+})
 
 export default function ContactPage() {
   return (

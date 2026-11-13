@@ -1,13 +1,14 @@
-import type { Metadata } from "next"
 import Link from "next/link"
 import { buttonVariants } from "@/components/ui/button"
 import { store } from "@/data/catalog"
+import { pageMetadata } from "@/lib/seo"
 import { cn } from "cn"
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Sobre",
   description: "A Use Semelle Calçados escolhe scarpins, rasteiras e papetes em Brasília.",
-}
+  path: "/sobre",
+})
 
 export default function AboutPage() {
   return (

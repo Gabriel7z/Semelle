@@ -5,6 +5,13 @@ import { ProductDetail } from "@/components/product-detail"
 import { productIsSellable, store } from "@/data/catalog"
 import { getProduct, products, relatedProducts } from "@/lib/loja"
 import { formatBRL } from "@/lib/format"
+import {
+  absolutePageUrl,
+  jsonLdScript,
+  pageMetadata,
+  productLabel,
+  productShareDescription,
+} from "@/lib/seo"
 
 type Params = { slug: string }
 
@@ -21,11 +28,21 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params
   const product = getProduct(slug)
-  if (!product) return { title: "Par não encontrado" }
-  return {
-    title: `${product.name} ${product.brand}`,
-    description: product.description,
+  if (!product) {
+    return {
+      title: "Par não encontrado",
+      robots: { index: false, follow: true },
+      alternates: {},
+    }
   }
+  const label = productLabel(product)
+  const image = product.colors.find((color) => color.images[0])?.images[0]
+  return pageMetadata({
+    title: label,
+    description: productShareDescription(product),
+    path: `/produtos/${product.slug}`,
+    image: image ? { url: image, alt: label } : undefined,
+  })
 }
 
 export default async function ProductPage({ params }: { params: Promise<Params> }) {
@@ -34,16 +51,19 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
   if (!product) notFound()
   const related = relatedProducts(product.slug)
 
+  const pageUrl = absolutePageUrl(`/produtos/${product.slug}`)
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
     description: product.description,
-    brand: product.brand,
-    image: product.colors[0]?.images.map((image) => image),
+    url: pageUrl,
+    brand: { "@type": "Brand", name: product.brand },
+    image: product.colors.flatMap((color) => color.images).filter(Boolean),
     sku: product.reference ?? product.slug,
     offers: {
       "@type": "Offer",
+      url: pageUrl,
       priceCurrency: "BRL",
       price: (product.price / 100).toFixed(2),
       availability: productIsSellable(product)
@@ -67,7 +87,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
       </section>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
     </>
   )

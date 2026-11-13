@@ -8,6 +8,8 @@ import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
 import { Toaster } from "@/components/ui/sonner"
 import { store } from "@/data/catalog"
+import { defaultShareImage, homeDescription, homeTitle, titleTemplate } from "@/lib/seo"
+import { pagesOrigin } from "@/lib/site"
 import "./globals.css"
 
 const outfit = Outfit({
@@ -29,18 +31,29 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
+  metadataBase: new URL(pagesOrigin),
   title: {
-    default: `${store.legalName} · ${store.tagline}`,
-    template: `%s · ${store.name}`,
+    default: homeTitle,
+    template: titleTemplate,
   },
-  description:
-    "Calçados femininos em Brasília. Scarpins, rasteiras e papetes Vizzano e Beira Rio, com elegância e conforto. Enviamos para todo o Brasil.",
+  description: homeDescription,
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: `${store.legalName} · ${store.tagline}`,
-    description:
-      "Scarpins, rasteiras e papetes escolhidos em Brasília. O par perfeito para cada passo.",
+    title: {
+      default: homeTitle,
+      template: titleTemplate,
+    },
+    description: homeDescription,
+    url: "/",
+    siteName: store.name,
     locale: "pt_BR",
     type: "website",
+    images: [defaultShareImage],
+  },
+  twitter: {
+    card: "summary_large_image",
   },
 }
 

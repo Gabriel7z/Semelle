@@ -6,6 +6,13 @@ import { categories, store } from "@/data/catalog"
 import { resolveHeroTiles } from "@/lib/hero-tiles"
 import { products } from "@/lib/loja"
 import { formatBRL } from "@/lib/format"
+import {
+  absoluteAssetUrl,
+  absolutePageUrl,
+  homeDescription,
+  jsonLdScript,
+  productLabel,
+} from "@/lib/seo"
 import { cn } from "cn"
 
 function resumo(texto: string) {
@@ -36,11 +43,31 @@ export default async function HomePage() {
   const featured = products.filter((product) => product.featured).slice(0, 6)
   const quote = featured[0] ?? products[0]
   const hero = quote?.colors[0]?.images[0] ?? "/products/rasteira-flor.jpg"
+  const heroAlt = quote ? productLabel(quote) : "Coleção Use Semelle"
   const vitrine = categories.slice(0, 6)
   const tiles = await resolveHeroTiles()
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ShoeStore",
+    name: store.legalName,
+    alternateName: store.name,
+    url: absolutePageUrl("/"),
+    image: absoluteAssetUrl("/products/rasteira-flor.jpg"),
+    description: homeDescription,
+    telephone: `+${store.whatsappNumber}`,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: store.city,
+      addressRegion: store.state,
+      addressCountry: "BR",
+    },
+    sameAs: [store.instagram],
+    areaServed: { "@type": "Country", name: "Brasil" },
+  }
 
   return (
     <div>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }} />
       <section className="border-b border-border">
         <div className="mx-auto max-w-6xl px-4 py-12 text-center sm:px-6 sm:py-16">
           <p className="text-xs tracking-[0.28em] text-muted-foreground uppercase">
@@ -95,7 +122,7 @@ export default async function HomePage() {
               <div className="relative aspect-[4/5] overflow-hidden bg-photo-stage">
                 <Image
                   src={category.image}
-                  alt=""
+                  alt={category.blurb ? `${category.name}. ${category.blurb}` : category.name}
                   fill
                   sizes="(min-width: 768px) 33vw, 100vw"
                   className="object-contain"
@@ -113,7 +140,7 @@ export default async function HomePage() {
           <div className="relative aspect-square overflow-hidden bg-photo-stage">
             <Image
               src={hero}
-              alt={quote ? `${quote.name} ${quote.brand}` : "Coleção Use Semelle"}
+              alt={heroAlt}
               fill
               sizes="(min-width: 768px) 40vw, 100vw"
               className="object-contain"
