@@ -3,8 +3,9 @@ name: Importar catálogo Aurora
 on:
   schedule:
     # Fora de :00 e :30, quando a fila do GitHub Actions enche e o cron some
-    # por horas. Se o GitHub pular o horário, o job encadear dispara a próxima.
-    - cron: "7,22,37,52 * * * *"
+    # por horas. A cada 30 minutos, nos minutos 7 e 37. Se o GitHub pular o
+    # horário, o job encadear dispara a próxima cerca de 30 minutos depois.
+    - cron: "7,37 * * * *"
   workflow_dispatch:
     inputs:
       encadear:
@@ -93,22 +94,144 @@ jobs:
       (needs.atualizar.result == 'success' || needs.atualizar.result == 'failure') &&
       (github.event_name != 'workflow_dispatch' || github.event.inputs.encadear != 'false')
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
     steps:
       - name: Disparar a próxima leitura
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
           ATUAL: ${{ github.run_id }}
           RAMO: ${{ github.event.repository.default_branch }}
         run: |
           set -euo pipefail
-          echo "Aguarda 10 minutos. Se outra leitura já estiver na fila, esta corrente para."
-          sleep 600
-          outros=$(gh run list --workflow importar-aurora.yml --limit 30 --json databaseId,status \
-            --jq "map(select(.databaseId != ${ATUAL} and (.status == \"queued\" or .status == \"in_progress\" or .status == \"waiting\" or .status == \"pending\" or .status == \"requested\"))) | length")
+          echo "Repositório: ${GH_REPO}. Run atual: ${ATUAL}."
+
+          # gh fala com a API. GH_REPO e --repo dispensam o checkout.
+          espera=1560
+          set +e
+          inicio=$(gh run view "${ATUAL}" --repo "${GH_REPO}" --json createdAt --jq '.createdAt' 2>&1)
+          view_codigo=$?
+          set -e
+          if [ "${view_codigo}" -eq 0 ]; then
+            inicio=${inicio%%$'\n'*}
+            inicio=${inicio//$'\r'/}
+            inicio=${inicio#\"}
+            inicio=${inicio%\"}
+            case "${inicio}" in
+              [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T*)
+                if inicio_epoch=$(date -d "${inicio}" +%s 2>/dev/null); then
+                  agora=$(date +%s)
+                  espera=$((inicio_epoch + 1800 - agora))
+                else
+                  echo "Não converti o início desta leitura (${inicio}). Espera fixa de 26 minutos."
+                  espera=1560
+                fi
+                ;;
+              *)
+                echo "Início desta leitura em formato inesperado (${inicio:-vazio}). Espera fixa de 26 minutos."
+                espera=1560
+                ;;
+            esac
+          else
+            echo "Não consultei o início desta leitura (código ${view_codigo}). Espera fixa de 26 minutos."
+            printf '%s\n' "${inicio}"
+            espera=1560
+          fi
+          if [ "${espera}" -lt 0 ]; then
+            echo "O início desta leitura já passou de 30 minutos. Sigo sem esperar."
+            espera=0
+          fi
+          # 28 min cabem no timeout de 35, com folga para as chamadas do gh.
+          if [ "${espera}" -gt 1680 ]; then
+            echo "Espera calculada de ${espera}s passa de 28 minutos. Limito para caber no timeout de 35 minutos."
+            espera=1680
+          fi
+          if [ "${espera}" -gt 0 ]; then
+            echo "Aguarda ${espera}s para a próxima leitura ficar cerca de 30 minutos depois do início desta. Se outra leitura já estiver na fila, ou tiver sido criada há menos de 20 minutos, esta corrente para."
+            sleep "${espera}"
+          else
+            echo "Sem espera adicional. Se outra leitura já estiver na fila, ou tiver sido criada há menos de 20 minutos, esta corrente para."
+          fi
+
+          lista=$(gh run list --workflow importar-aurora.yml --repo "${GH_REPO}" --limit 30 --json databaseId,status,createdAt)
+          outros=$(printf '%s\n' "${lista}" | jq -r --argjson atual "${ATUAL}" '
+            [
+              .[]
+              | select(.databaseId != $atual)
+              | select(
+                  .status == "queued"
+                  or .status == "in_progress"
+                  or .status == "waiting"
+                  or .status == "pending"
+                  or .status == "requested"
+                )
+            ] | length
+          ')
+          case "${outros}" in
+            ''|*[!0-9]*)
+              echo "Não consegui contar as leituras em andamento."
+              printf '%s\n' "${outros}"
+              exit 1
+              ;;
+          esac
           if [ "${outros}" != "0" ]; then
             echo "Já existe leitura na fila ou em andamento (${outros}). Não disparo outra."
             exit 0
           fi
-          gh workflow run importar-aurora.yml --ref "${RAMO}" -f encadear=true
+
+          corte=$(( $(date +%s) - 1200 ))
+          recentes=0
+          datas=$(printf '%s\n' "${lista}" | jq -r --argjson atual "${ATUAL}" '
+            [ .[] | select(.databaseId != $atual) | .createdAt | strings | select(length > 0) ] | .[]
+          ')
+          if [ -n "${datas}" ]; then
+            while IFS= read -r criado; do
+              criado=${criado//$'\r'/}
+              [ -z "${criado}" ] && continue
+              case "${criado}" in
+                [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T*) ;;
+                *)
+                  echo "Data de criação ignorada (formato inesperado): ${criado}"
+                  continue
+                  ;;
+              esac
+              if ! epoch=$(date -d "${criado}" +%s 2>/dev/null); then
+                echo "Data de criação ignorada (não deu para converter): ${criado}"
+                continue
+              fi
+              if [ "${epoch}" -gt "${corte}" ]; then
+                recentes=$((recentes + 1))
+              fi
+            done <<< "${datas}"
+          fi
+          if [ "${recentes}" != "0" ]; then
+            echo "Já existe outra leitura criada há menos de 20 minutos (${recentes}). Não disparo outra."
+            exit 0
+          fi
+
+          echo "Nenhuma outra leitura ativa ou recente. Disparo a próxima em ${RAMO}."
+          set +e
+          saida=$(gh workflow run importar-aurora.yml --repo "${GH_REPO}" --ref "${RAMO}" -f encadear=true 2>&1)
+          codigo=$?
+          set -e
+          if [ "${codigo}" -ne 0 ]; then
+            echo "Falha ao disparar a próxima leitura (código ${codigo})."
+            printf '%s\n' "${saida}"
+            baixa=$(printf '%s' "${saida}" | tr '[:upper:]' '[:lower:]')
+            case "${baixa}" in
+              *rate\ limit*|*secondary\ rate*|*http\ 429*)
+                echo "A API do GitHub recusou o disparo por limite de uso. O cron dos minutos 7 e 37 segue como rede de segurança."
+                ;;
+              *resource\ not\ accessible*|*bad\ credentials*|*requires\ authentication*|*forbidden*|*http\ 403*)
+                echo "Permissão recusada: o GITHUB_TOKEN não conseguiu disparar o workflow. O cron dos minutos 7 e 37 segue como rede de segurança."
+                ;;
+              *)
+                echo "A saída acima é a falha real do gh. O cron dos minutos 7 e 37 segue como rede de segurança."
+                ;;
+            esac
+            exit "${codigo}"
+          fi
           echo "Próxima leitura disparada em ${RAMO}."
+          if [ -n "${saida}" ]; then
+            printf '%s\n' "${saida}"
+          fi
