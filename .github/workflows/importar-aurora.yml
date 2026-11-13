@@ -101,10 +101,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           ATUAL: ${{ github.run_id }}
-          RAMO: ${{ github.event.repository.default_branch }}
+          RAMO: ${{ github.event.repository.default_branch || github.ref_name || 'main' }}
         run: |
           set -euo pipefail
-          echo "Repositório: ${GH_REPO}. Run atual: ${ATUAL}."
+          if [ -z "${RAMO:-}" ]; then
+            RAMO="main"
+          fi
+          echo "Repositório: ${GH_REPO}. Run atual: ${ATUAL}. Ramo: ${RAMO}."
 
           # gh fala com a API. GH_REPO e --repo dispensam o checkout.
           espera=1560
