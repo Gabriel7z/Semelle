@@ -3,6 +3,7 @@ import Link from "next/link"
 import { ProductCard } from "@/components/product-card"
 import { buttonVariants } from "@/components/ui/button"
 import { categories, store } from "@/data/catalog"
+import { resolveHeroTiles } from "@/lib/hero-tiles"
 import { products } from "@/lib/loja"
 import { formatBRL } from "@/lib/format"
 import { cn } from "cn"
@@ -31,81 +32,58 @@ const steps = [
   },
 ]
 
-export default function HomePage() {
+export default async function HomePage() {
   const featured = products.filter((product) => product.featured).slice(0, 6)
   const quote = featured[0] ?? products[0]
   const hero = quote?.colors[0]?.images[0] ?? "/products/rasteira-flor.jpg"
   const vitrine = categories.slice(0, 6)
+  const tiles = await resolveHeroTiles()
 
   return (
     <div>
       <section className="border-b border-border">
-        <div className="mx-auto grid max-w-6xl lg:min-h-[640px] lg:grid-cols-2">
-          <div className="flex flex-col justify-center px-4 py-12 sm:px-6 lg:py-20 lg:pr-16">
-            <p className="text-[0.68rem] tracking-[0.24em] text-muted-foreground uppercase">
-              {store.city} · calçados femininos
-            </p>
-            <h1 className="font-heading mt-4 text-4xl leading-[0.95] text-primary sm:text-6xl">
-              O par perfeito para cada passo.
-            </h1>
-            <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
-              Scarpins, rasteiras e papetes escolhidos um a um. Elegância que aguenta o dia — e o brilho, só quando o look pede.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="/produtos"
-                className={cn(buttonVariants({ size: "lg" }), "h-11 px-6")}
-              >
-                Ver a coleção
+        <div className="mx-auto max-w-6xl px-4 py-12 text-center sm:px-6 sm:py-16">
+          <p className="text-xs tracking-[0.28em] text-muted-foreground uppercase">
+            {store.city} · calçados femininos
+          </p>
+          <h1 className="font-heading mt-3.5 text-[2.25rem] leading-[1.05] font-light text-primary sm:text-[3.5rem]">
+            As marcas que você ama,
+            <br />
+            <span className="italic">escolhidas um a um.</span>
+          </h1>
+          <p className="mt-3 text-base leading-6 text-muted-foreground">
+            Escolha por marca e encontre o seu par.
+          </p>
+          <div className="mt-8 grid grid-cols-2 gap-2.5 sm:mt-11 sm:gap-4 lg:grid-cols-4">
+            {tiles.map((tile) => (
+              <Link key={tile.brand} href={tile.href} className="group block text-center">
+                <div className="relative aspect-[4/5] overflow-hidden bg-photo-stage">
+                  <Image
+                    src={tile.image}
+                    alt={tile.name}
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 25vw, 50vw"
+                    className="object-contain p-4 mix-blend-multiply sm:p-7"
+                  />
+                </div>
+                <p className="mt-3.5 text-xs tracking-[0.26em] text-foreground uppercase sm:text-[0.8125rem] sm:tracking-[0.32em]">
+                  {tile.brand}
+                </p>
+                <p className="mt-1.5 text-xs tracking-wide text-gold group-hover:underline">
+                  Ver coleção
+                </p>
               </Link>
-              <a
-                href={store.instagram}
-                target="_blank"
-                rel="noreferrer"
-                className={cn(buttonVariants({ variant: "outline", size: "lg" }), "h-11 px-6")}
-              >
-                Instagram
-              </a>
-            </div>
-            <dl className="mt-12 grid grid-cols-3 gap-2 border-t border-border pt-6 text-xs sm:gap-4 sm:text-sm">
-              <div>
-                <dt className="text-muted-foreground">Origem</dt>
-                <dd className="mt-1 font-medium">Brasília</dd>
-              </div>
-              <div>
-                <dt className="text-muted-foreground">Envio</dt>
-                <dd className="mt-1 font-medium">Todo o Brasil</dd>
-              </div>
-              <div>
-                <dt className="text-muted-foreground">Troca</dt>
-                <dd className="mt-1 font-medium">7 dias</dd>
-              </div>
-            </dl>
+            ))}
           </div>
-          <div className="relative order-first min-h-[72vw] bg-[#efe8dc] sm:min-h-[440px] lg:order-none">
-            <Image
-              src={hero}
-              alt={quote ? `${quote.name} ${quote.brand}` : "Coleção Use Semelle"}
-              fill
-              priority
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-contain"
-            />
-          </div>
+          <Link
+            href="/produtos"
+            className={cn(buttonVariants(), "mt-10 inline-flex h-11 px-7 text-sm tracking-[0.06em] sm:mt-11")}
+          >
+            Ver toda a coleção
+          </Link>
         </div>
       </section>
-
-      <div className="overflow-hidden border-b border-border py-3">
-        <div className="semelle-marquee flex w-max gap-8 text-[0.72rem] tracking-[0.22em] text-muted-foreground uppercase">
-          {Array.from({ length: 2 }).map((_, copy) => (
-            <p key={copy} className="flex gap-8">
-              {["Vizzano", "Beira Rio", "Modare", "Moleca", "Use Semelle", "Brasília"].map((item) => (
-                <span key={`${copy}-${item}`}>{item}</span>
-              ))}
-            </p>
-          ))}
-        </div>
-      </div>
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="flex items-end justify-between gap-4">
@@ -114,7 +92,7 @@ export default function HomePage() {
         <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3">
           {vitrine.map((category) => (
             <Link key={category.id} href={`/produtos?categoria=${category.id}`} className="group">
-              <div className="relative aspect-[4/5] overflow-hidden bg-[#efe8dc]">
+              <div className="relative aspect-[4/5] overflow-hidden bg-photo-stage">
                 <Image
                   src={category.image}
                   alt=""
@@ -132,7 +110,7 @@ export default function HomePage() {
 
       <section className="border-y border-border bg-card">
         <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 py-14 sm:px-6 md:grid-cols-[1fr_1.1fr]">
-          <div className="relative aspect-square overflow-hidden bg-[#efe8dc]">
+          <div className="relative aspect-square overflow-hidden bg-photo-stage">
             <Image
               src={hero}
               alt={quote ? `${quote.name} ${quote.brand}` : "Coleção Use Semelle"}
@@ -142,7 +120,7 @@ export default function HomePage() {
             />
           </div>
           <div>
-            <p className="text-[0.68rem] tracking-[0.22em] text-muted-foreground uppercase">
+            <p className="text-xs tracking-[0.22em] text-muted-foreground uppercase">
               Da vitrine
             </p>
             <blockquote className="font-heading mt-3 text-3xl leading-snug text-primary sm:text-4xl">

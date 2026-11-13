@@ -129,3 +129,47 @@ export function categoryName(id: CategoryId) {
 }
 
 export const brands = [...new Set(products.map((product) => product.brand))]
+
+/**
+ * Marcas do hero. `preferred` é a foto escolhida; `fallbacks` entram, nesta ordem,
+ * se o slug sumir do catálogo ou o par esgotar. A resolução automática fica em
+ * `src/lib/hero-tiles.ts`.
+ */
+export const heroBrands = [
+  {
+    brand: "Vizzano",
+    preferred: "salto-scarpin-veniz-vizzano-3338007",
+    fallbacks: [
+      "salto-scarpin-nude-vizzano-3621591",
+      "salto-sublime-off-white-vizzano-3796229",
+      "salto-dreamy-nude-vizzano-3482823",
+    ],
+  },
+  {
+    brand: "Moleca",
+    preferred: "salto-belize-moleca-2688005",
+    fallbacks: [
+      "salto-tira-napa-branco-off-moleca-4558290",
+      "salto-strass-nude-moleca-3808948",
+      "salto-tira-napa-nude-moleca-4558329",
+    ],
+  },
+  {
+    brand: "Modare",
+    preferred: "salto-trento-branco-off-modare-4642995",
+    fallbacks: [
+      "salto-scarpin-confort-nude-modare-3344704",
+      "scarpin-floather-nude-modare-4643119",
+      "salto-aflora-branco-off-modare-4445532",
+    ],
+  },
+  {
+    brand: "Beira Rio",
+    preferred: "salto-turim-branco-off-beira-rio-3796488",
+    fallbacks: [
+      "salto-scarpin-nude-napa-beira-rio-4469078",
+      "salto-wires-napa-nude-beira-rio-4468972",
+      "salto-classy-branco-off-beira-rio-4475332",
+    ],
+  },
+] as const

@@ -56,13 +56,13 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-md">
       <div className="bg-primary text-primary-foreground">
-        <p className="mx-auto max-w-6xl px-4 py-2 text-center text-[0.72rem] tracking-wide sm:px-6">
+        <p className="mx-auto max-w-6xl px-4 py-2 text-center text-xs tracking-wide sm:px-6">
           1ª compra: 20% no PIX, exceto itens em promoção
           <span className="hidden sm:inline"> · Frete grátis para Brasília acima de {formatBRL(store.freeShippingCents)}</span>
         </p>
       </div>
-      <div className="mx-auto grid max-w-6xl grid-cols-3 items-center px-4 py-3 sm:px-6">
-        <div className="flex items-center gap-1">
+      <div className="mx-auto grid max-w-6xl grid-cols-[1fr_auto_1fr] items-center gap-2 px-4 py-3 sm:px-6">
+        <div className="flex items-center gap-1 justify-self-start">
           <Button
             variant="ghost"
             size="icon"
@@ -82,11 +82,11 @@ export function SiteHeader() {
             <InstagramIcon className="size-4" />
           </a>
         </div>
-        <Link href="/" className="justify-self-center text-center">
-          <span className="block text-[0.58rem] tracking-[0.16em] text-primary/70 uppercase sm:tracking-[0.32em]">
+        <Link href="/" className="px-2 text-center">
+          <span className="block text-xs tracking-[0.28em] text-muted-foreground uppercase sm:tracking-[0.32em]">
             {store.tagline}
           </span>
-          <span className="block text-[1.35rem] leading-none font-extrabold tracking-tight text-primary italic sm:text-[1.65rem]">
+          <span className="font-heading mt-1 block text-[1.65rem] leading-none font-normal whitespace-nowrap text-primary italic sm:text-[1.75rem]">
             use semelle
           </span>
         </Link>
@@ -108,7 +108,7 @@ export function SiteHeader() {
           >
             <ShoppingBag />
             {ready && count > 0 ? (
-              <span className="absolute -top-0.5 -right-0.5 grid size-4 place-items-center rounded-full bg-primary text-[0.6rem] text-primary-foreground">
+              <span className="absolute top-0.5 right-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-xs leading-none text-primary-foreground">
                 {count}
               </span>
             ) : null}
@@ -120,7 +120,7 @@ export function SiteHeader() {
           <Link
             key={link.href}
             href={link.href}
-            className="text-[0.78rem] tracking-[0.16em] text-foreground/80 uppercase hover:text-primary"
+            className="text-xs tracking-[0.18em] text-foreground uppercase hover:text-primary"
           >
             {link.label}
           </Link>
@@ -130,7 +130,7 @@ export function SiteHeader() {
       <Sheet open={menu} onOpenChange={setMenu}>
         <SheetContent side="left" className="w-full overflow-y-auto sm:max-w-xs">
           <SheetHeader>
-            <SheetTitle className="font-heading text-2xl italic">use semelle</SheetTitle>
+            <SheetTitle className="font-heading text-2xl font-normal italic">use semelle</SheetTitle>
           </SheetHeader>
           <nav className="flex flex-col gap-1 px-4 pb-8">
             <Link href="/produtos" onClick={() => setMenu(false)} className="border-b border-border py-3 text-lg">

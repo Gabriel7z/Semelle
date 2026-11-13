@@ -62,21 +62,26 @@ export function Catalog() {
   }, [category, brand, size, sort, query])
 
   const activeCategory = categories.find((item) => item.id === category)
+  const activeBrand = brands.find((item) => item === brand) ?? null
+  const title =
+    [activeBrand, activeCategory?.name].filter(Boolean).join(" · ") || "Todos os pares"
   const page = visible.slice(0, shown)
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <p className="text-[0.68rem] tracking-[0.22em] text-muted-foreground uppercase">
+      <p className="text-xs tracking-[0.22em] text-muted-foreground uppercase">
         Coleção
       </p>
       <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <h1 className="font-heading text-4xl text-primary sm:text-5xl">
-          {activeCategory ? activeCategory.name : "Todos os pares"}
+        <h1 className="font-heading text-4xl leading-[1.05] text-primary sm:text-[3.5rem]">
+          {title}
         </h1>
         <p className="max-w-md text-sm text-muted-foreground">
-          {activeCategory
-            ? activeCategory.blurb
-            : "O que está no Instagram da Use Semelle, pronto para escolher cor e número."}
+          {activeBrand
+            ? `Pares ${activeBrand} da coleção Use Semelle.`
+            : activeCategory
+              ? activeCategory.blurb
+              : "O que está no Instagram da Use Semelle, pronto para escolher cor e número."}
         </p>
       </div>
 
@@ -124,7 +129,7 @@ export function Catalog() {
           <select
             value={sort}
             onChange={(event) => update("ordem", event.target.value)}
-            className="h-11 border border-input bg-background px-2 text-base text-foreground sm:h-9 sm:text-sm"
+            className="h-11 border border-input bg-background px-2 text-sm text-foreground"
           >
             {sorts.map((item) => (
               <option key={item.id} value={item.id}>
@@ -187,10 +192,10 @@ function FilterChip({
       type="button"
       onClick={onClick}
       className={cn(
-        "h-11 shrink-0 border px-3 text-xs tracking-wide uppercase sm:h-8",
+        "h-11 shrink-0 border px-3 text-sm tracking-wide uppercase",
         active
           ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-background hover:border-primary",
+          : "border-input bg-background hover:border-primary",
       )}
     >
       {children}

@@ -12,10 +12,10 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <article className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
-      <p className="text-[0.68rem] tracking-[0.22em] text-muted-foreground uppercase">
+      <p className="text-xs tracking-[0.22em] text-muted-foreground uppercase">
         {store.city} — {store.state}
       </p>
-      <h1 className="font-heading mt-3 text-5xl text-primary">O par perfeito.</h1>
+      <h1 className="font-heading mt-3 text-4xl leading-[1.05] text-primary sm:text-[3.5rem]">O par perfeito.</h1>
       <div className="mt-6 space-y-4 text-base leading-relaxed">
         <p>
           A Use Semelle é uma loja de calçados femininos em Brasília. Semelle, em francês, é a sola — a parte que encontra o chão. A proposta cabe numa frase que a própria loja usa: elegância e conforto no mesmo pé.

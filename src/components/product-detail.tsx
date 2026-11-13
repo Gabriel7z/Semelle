@@ -113,7 +113,7 @@ export function ProductDetail({ product }: { product: Product }) {
   return (
     <div className="mx-auto grid max-w-6xl gap-8 px-4 py-8 pb-32 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:pb-8">
       <div>
-        <div className="relative aspect-square overflow-hidden bg-[#efe8dc]">
+        <div className="relative aspect-square overflow-hidden bg-photo-stage">
           {activePhoto ? (
             <Image
               src={activePhoto}
@@ -146,7 +146,7 @@ export function ProductDetail({ product }: { product: Product }) {
       </div>
 
       <div>
-        <p className="text-[0.68rem] tracking-[0.16em] break-words text-muted-foreground uppercase sm:tracking-[0.2em]">
+        <p className="text-xs tracking-[0.16em] break-words text-muted-foreground uppercase sm:tracking-[0.2em]">
           <Link href={`/produtos?categoria=${product.category}`} className="hover:text-primary">
             {product.category}
           </Link>
@@ -154,7 +154,7 @@ export function ProductDetail({ product }: { product: Product }) {
           {product.brand}
           {product.reference ? ` · ref. ${product.reference}` : ""}
         </p>
-        <h1 className="font-heading mt-2 text-3xl break-words text-primary sm:text-5xl">
+        <h1 className="font-heading mt-2 text-4xl leading-[1.05] break-words text-primary sm:text-[3.5rem]">
           {product.name}
         </h1>
         <div className="mt-4">
@@ -178,8 +178,8 @@ export function ProductDetail({ product }: { product: Product }) {
                 aria-pressed={item.id === color?.id}
                 onClick={() => chooseColor(item.id)}
                 className={cn(
-                  "flex items-center gap-2 border px-3 py-2 text-sm",
-                  item.id === color?.id ? "border-primary" : "border-border",
+                  "flex min-h-11 items-center gap-2 border px-3 py-2 text-sm",
+                  item.id === color?.id ? "border-primary" : "border-input",
                 )}
               >
                 <span
@@ -245,8 +245,8 @@ export function ProductDetail({ product }: { product: Product }) {
                   className={cn(
                     "h-11 border text-sm",
                     selected && "border-primary bg-primary text-primary-foreground",
-                    !selected && left === 0 && "text-muted-foreground line-through",
-                    !selected && left !== 0 && "border-border hover:border-primary",
+                    !selected && left === 0 && "border-input text-muted-foreground line-through",
+                    !selected && left !== 0 && "border-input hover:border-primary",
                   )}
                 >
                   {item}
@@ -274,7 +274,7 @@ export function ProductDetail({ product }: { product: Product }) {
         </div>
 
         {size && available === 0 ? (
-          <form onSubmit={saveAlert} className="mt-6 space-y-2 border border-border p-4">
+          <form onSubmit={saveAlert} className="mt-6 space-y-2 border border-input p-4">
             <p className="text-sm">Avise-me quando o {size} voltar.</p>
             <Input
               value={alertContact}
@@ -289,10 +289,10 @@ export function ProductDetail({ product }: { product: Product }) {
           </form>
         ) : (
           <div className="mt-6 hidden items-center gap-3 lg:flex">
-            <div className="flex h-11 items-center border border-border">
+            <div className="flex h-11 items-center border border-input">
               <button
                 type="button"
-                className="w-10"
+                className="w-11"
                 aria-label="Diminuir"
                 onClick={() => setQty((value) => Math.max(1, value - 1))}
               >
@@ -301,7 +301,7 @@ export function ProductDetail({ product }: { product: Product }) {
               <span className="w-8 text-center text-sm">{qty}</span>
               <button
                 type="button"
-                className="w-10"
+                className="w-11"
                 aria-label="Aumentar"
                 onClick={() =>
                   setQty((value) => Math.min(maxPurchasable(available), value + 1))
@@ -366,10 +366,10 @@ export function ProductDetail({ product }: { product: Product }) {
               <p className="truncate text-xs text-muted-foreground">{product.brand}</p>
               <PriceTag price={product.price} compareAt={product.compareAt} />
             </div>
-            <div className="ml-auto flex h-11 items-center border border-border">
+            <div className="ml-auto flex h-11 items-center border border-input">
               <button
                 type="button"
-                className="w-10"
+                className="w-11"
                 aria-label="Diminuir"
                 onClick={() => setQty((value) => Math.max(1, value - 1))}
               >
@@ -378,7 +378,7 @@ export function ProductDetail({ product }: { product: Product }) {
               <span className="w-6 text-center text-sm">{qty}</span>
               <button
                 type="button"
-                className="w-10"
+                className="w-11"
                 aria-label="Aumentar"
                 onClick={() =>
                   setQty((value) => Math.min(maxPurchasable(available), value + 1))

@@ -8,17 +8,17 @@ export function SiteFooter() {
     <footer className="mt-20 border-t border-border bg-primary text-primary-foreground">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-1">
-          <p className="text-[0.62rem] tracking-[0.28em] uppercase opacity-70">
+          <p className="text-xs tracking-[0.28em] uppercase opacity-70">
             {store.tagline}
           </p>
-          <p className="font-heading mt-1 text-4xl italic">use semelle</p>
+          <p className="font-heading mt-1 text-4xl font-normal italic">use semelle</p>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-primary-foreground/80">
             Calçados femininos em {store.city}. Scarpins, rasteiras e papetes
             escolhidos para quem quer elegância com o pé no chão.
           </p>
         </div>
         <div>
-          <p className="text-[0.68rem] tracking-[0.18em] uppercase opacity-70">
+          <p className="text-xs tracking-[0.18em] uppercase opacity-70">
             Coleção
           </p>
           <ul className="mt-3 space-y-2 text-sm">
@@ -40,7 +40,7 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <p className="text-[0.68rem] tracking-[0.18em] uppercase opacity-70">
+          <p className="text-xs tracking-[0.18em] uppercase opacity-70">
             A loja
           </p>
           <ul className="mt-3 space-y-2 text-sm">
@@ -67,7 +67,7 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <p className="text-[0.68rem] tracking-[0.18em] uppercase opacity-70">
+          <p className="text-xs tracking-[0.18em] uppercase opacity-70">
             Atendimento
           </p>
           <p className="mt-3 text-sm leading-relaxed text-primary-foreground/80">

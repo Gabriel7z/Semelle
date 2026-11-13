@@ -27,7 +27,7 @@ export function EntryNotice() {
       aria-labelledby="aviso-desconto-titulo"
     >
       <div className="w-full max-w-md bg-background p-6">
-        <p className="text-[0.68rem] tracking-[0.2em] text-muted-foreground uppercase">Aviso</p>
+        <p className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Aviso</p>
         <h2 id="aviso-desconto-titulo" className="font-heading mt-2 text-3xl text-primary">
           Desconto de primeira compra
         </h2>

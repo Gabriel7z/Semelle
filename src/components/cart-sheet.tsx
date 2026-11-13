@@ -24,7 +24,6 @@ export function CartSheet() {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent
         className="gap-0 bg-background p-0 opacity-100! data-[side=right]:w-full data-[side=right]:max-w-none data-[side=right]:sm:max-w-md"
-        style={{ backgroundColor: "#faf7f2", opacity: 1 }}
       >
         <SheetHeader className="border-b">
           <SheetTitle className="font-heading text-2xl">Sacola</SheetTitle>
@@ -60,7 +59,7 @@ export function CartSheet() {
                   <Link
                     href={`/produtos/${line.slug}`}
                     onClick={() => setOpen(false)}
-                    className="relative size-20 shrink-0 overflow-hidden bg-[#efe8dc]"
+                    className="relative size-20 shrink-0 overflow-hidden bg-photo-stage"
                   >
                     <Image
                       src={line.image}
@@ -73,7 +72,7 @@ export function CartSheet() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <p className="text-[0.68rem] tracking-[0.14em] text-muted-foreground uppercase">
+                        <p className="text-xs tracking-[0.14em] text-muted-foreground uppercase">
                           {line.brand}
                         </p>
                         <p className="leading-tight">{line.name}</p>
@@ -91,10 +90,10 @@ export function CartSheet() {
                       </button>
                     </div>
                     <div className="mt-2 flex items-center justify-between">
-                      <div className="flex items-center border border-border">
+                      <div className="flex h-11 items-center border border-input">
                         <button
                           type="button"
-                          className="grid size-8 place-items-center"
+                          className="grid size-11 place-items-center"
                           aria-label="Diminuir quantidade"
                           onClick={() => setQty(line.key, line.qty - 1)}
                         >
@@ -103,7 +102,7 @@ export function CartSheet() {
                         <span className="w-6 text-center text-sm">{line.qty}</span>
                         <button
                           type="button"
-                          className="grid size-8 place-items-center"
+                          className="grid size-11 place-items-center"
                           aria-label="Aumentar quantidade"
                           onClick={() => setQty(line.key, line.qty + 1)}
                         >
