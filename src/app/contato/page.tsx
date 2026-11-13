@@ -12,10 +12,10 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <article className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
-      <p className="text-[0.68rem] tracking-[0.22em] text-muted-foreground uppercase">
+      <p className="text-xs tracking-[0.22em] text-muted-foreground uppercase">
         {store.city}
       </p>
-      <h1 className="font-heading mt-3 text-5xl text-primary">Fale com a Use Semelle</h1>
+      <h1 className="font-heading mt-3 text-4xl leading-[1.05] text-primary sm:text-[3.5rem]">Fale com a Use Semelle</h1>
       <p className="mt-4 max-w-lg leading-relaxed text-muted-foreground">
         O atendimento de pedidos acontece pelo WhatsApp. Número, cor esgotada, retirada e PIX passam por lá — o Instagram segue como vitrine da coleção.
       </p>

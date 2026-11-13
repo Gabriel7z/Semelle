@@ -35,7 +35,7 @@ export function OrderView() {
   if (!order) {
     return (
       <div className="mx-auto max-w-xl px-4 py-20 sm:px-6">
-        <h1 className="font-heading text-4xl text-primary">Pedido não encontrado.</h1>
+        <h1 className="font-heading text-4xl leading-[1.05] text-primary sm:text-[3.5rem]">Pedido não encontrado.</h1>
         <p className="mt-3 text-sm text-muted-foreground">
           Os pedidos ficam salvos neste navegador.
           {id
@@ -51,10 +51,10 @@ export function OrderView() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
-      <p className="text-[0.68rem] tracking-[0.22em] text-muted-foreground uppercase">
+      <p className="text-xs tracking-[0.22em] text-muted-foreground uppercase">
         Pedido reservado
       </p>
-      <h1 className="font-heading mt-2 text-4xl text-primary sm:text-5xl">{order.id}</h1>
+      <h1 className="font-heading mt-2 text-4xl leading-[1.05] text-primary sm:text-[3.5rem]">{order.id}</h1>
       <p className="mt-2 text-sm text-muted-foreground">
         {formatWhen(order.createdAt)} · horário de Brasília
       </p>

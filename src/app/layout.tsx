@@ -17,6 +17,8 @@ const outfit = Outfit({
 
 const fraunces = Fraunces({
   subsets: ["latin"],
+  style: ["normal", "italic"],
+  axes: ["opsz"],
   variable: "--font-fraunces",
 })
 
@@ -48,8 +50,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
-      <body className={`${outfit.variable} ${fraunces.variable} overflow-x-clip antialiased`}>
+    <html
+      lang="pt-BR"
+      className={`${outfit.variable} ${fraunces.variable}`}
+      suppressHydrationWarning
+    >
+      <body className="overflow-x-clip antialiased">
         <ThemeProvider forcedTheme="light" attribute="class" disableTransitionOnChange>
           <CartProvider>
             <div className="flex min-h-screen flex-col">

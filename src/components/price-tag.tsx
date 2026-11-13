@@ -29,7 +29,7 @@ export function PriceTag({
       <p className={cn("text-primary", size === "lg" ? "font-heading text-3xl" : "text-sm font-medium")}>
         {formatBRL(price)}
       </p>
-      <p className="text-[0.68rem] tracking-[0.12em] text-gold uppercase">Promoção</p>
+      <p className="text-xs tracking-[0.12em] text-gold uppercase">Promoção</p>
     </div>
   )
 }

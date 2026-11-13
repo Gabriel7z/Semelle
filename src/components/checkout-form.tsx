@@ -155,10 +155,10 @@ export function CheckoutForm() {
   if (lines.length === 0) {
     return (
       <div className="mx-auto max-w-xl px-4 py-20 sm:px-6">
-        <p className="text-[0.68rem] tracking-[0.2em] text-muted-foreground uppercase">
+        <p className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
           Pedido
         </p>
-        <h1 className="font-heading mt-2 text-4xl text-primary">A sacola está vazia.</h1>
+        <h1 className="font-heading mt-2 text-4xl leading-[1.05] text-primary sm:text-[3.5rem]">A sacola está vazia.</h1>
         <p className="mt-3 text-sm text-muted-foreground">
           Escolha um par antes de fechar. Cor e número ficam guardados na sacola deste navegador.
         </p>
@@ -173,10 +173,10 @@ export function CheckoutForm() {
     <form onSubmit={submit} className="mx-auto grid max-w-6xl gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1.2fr_0.8fr]">
       <div className="space-y-8">
         <div>
-          <p className="text-[0.68rem] tracking-[0.2em] text-muted-foreground uppercase">
+          <p className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
             Fechar pedido
           </p>
-          <h1 className="font-heading mt-2 text-4xl text-primary">Seus dados</h1>
+          <h1 className="font-heading mt-2 text-4xl leading-[1.05] text-primary sm:text-[3.5rem]">Seus dados</h1>
           <p className="mt-2 max-w-lg text-sm text-muted-foreground">
             O site não cobra. A Use Semelle confirma o estoque do número e combina o PIX pelo WhatsApp {store.whatsappDisplay}.
           </p>
@@ -292,7 +292,7 @@ export function CheckoutForm() {
         <ul className="mt-4 space-y-3">
           {lines.map((line) => (
             <li key={line.key} className="flex gap-3 text-sm">
-              <div className="relative size-14 shrink-0 overflow-hidden bg-[#efe8dc]">
+              <div className="relative size-14 shrink-0 overflow-hidden bg-photo-stage">
                 <Image src={line.image} alt="" fill sizes="56px" className="object-contain p-1" />
               </div>
               <div className="min-w-0 flex-1">
@@ -391,7 +391,7 @@ function Choice({
       onClick={onClick}
       className={cn(
         "h-11 border px-3 text-left text-sm",
-        pressed ? "border-primary bg-primary text-primary-foreground" : "border-border",
+        pressed ? "border-primary bg-primary text-primary-foreground" : "border-input",
       )}
     >
       {children}

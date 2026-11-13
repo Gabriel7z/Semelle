@@ -9,7 +9,7 @@ export function ProductCard({ product }: { product: Product }) {
   const image = product.colors[0]?.images[0]
   return (
     <Link href={`/produtos/${product.slug}`} className="group block">
-      <div className="relative aspect-square overflow-hidden bg-[#efe8dc]">
+      <div className="relative aspect-square overflow-hidden bg-photo-stage">
         {image ? (
           <Image
             src={image}
@@ -26,7 +26,7 @@ export function ProductCard({ product }: { product: Product }) {
         ) : null}
       </div>
       <div className="pt-3">
-        <p className="truncate text-[0.68rem] tracking-[0.14em] text-muted-foreground uppercase sm:tracking-[0.18em]">
+        <p className="truncate text-xs tracking-[0.14em] text-muted-foreground uppercase sm:tracking-[0.18em]">
           {product.brand} · {categoryName(product.category)}
         </p>
         <div className="mt-1 flex flex-col gap-1">
