@@ -44,7 +44,12 @@ export default async function HomePage() {
   const quote = featured[0] ?? products[0]
   const hero = quote?.colors[0]?.images[0] ?? "/products/rasteira-flor.jpg"
   const heroAlt = quote ? productLabel(quote) : "Coleção Use Semelle"
-  const vitrine = categories.slice(0, 6)
+  const destaque = categories.slice(0, 6)
+  const infantil = categories.find((category) => category.id === "tenis-infantil")
+  const vitrine =
+    infantil && !destaque.some((category) => category.id === infantil.id)
+      ? [...destaque, infantil]
+      : destaque
   const tiles = await resolveHeroTiles()
   const jsonLd = {
     "@context": "https://schema.org",

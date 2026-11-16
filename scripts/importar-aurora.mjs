@@ -15,6 +15,16 @@ const MARCAS = [
   { id: "200872", marca: "Vizzano" },
 ]
 
+/**
+ * Só a subcategoria Tênis. A marca inteira (Molekinha 187619, Molekinho 189351)
+ * também traz rasteira, bota, meia e bolsa — isso misturaria com o feminino.
+ * `marcaId` é a categoria pai, que é a chave em `produto.categorias`.
+ */
+const LINHAS_INFANTIS = [
+  { id: "423275", marca: "Molekinha", marcaId: "187619" },
+  { id: "423290", marca: "Molekinho", marcaId: "189351" },
+]
+
 const PULAR = /^(bolsas?|meias?)$/i
 
 let semNumeracao = 0
@@ -86,6 +96,8 @@ const SUB = {
   425018: "Sapatilhas",
   423299: "Tamancos",
   423300: "Tênis",
+  423275: "Tênis Infantil",
+  423290: "Tênis Infantil",
 }
 
 const CDN = "https://arquivos.facilzap.app.br"
@@ -223,9 +235,13 @@ function listaVariacoes(produto) {
   return lista.filter((item) => item && typeof item === "object")
 }
 
+/**
+ * Número da variação. Feminino vai de 33 a 42; infantil, de 17 a 36.
+ * Em "33/34" fica o primeiro número, como a vitrine já fazia.
+ */
 function tamanhoDe(nome) {
   const texto = String(nome || "")
-  const match = texto.match(/\b(3[3-9]|4[0-2])\b/)
+  const match = texto.match(/\b(1[7-9]|2\d|3\d|4[0-2])\b/)
   return match ? match[1] : null
 }
 
@@ -365,6 +381,8 @@ function semPrecoDeAtacado(texto) {
     .replace(/atacado|varejo|cvariado|\bvariado\b:?/gi, " ")
     .replace(/(?:r\$\s*)?\d{1,3}(?:\.\d{3})*,\d{2}/g, " ")
     .replace(/\d{1,3},\d\s+\d{1,2}\b/g, " ")
+    .replace(/,\d{2}(?=\s|$)/g, " ")
+    .replace(/\bvariad\b/gi, " ")
     .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\uFE0F]/gu, "")
     .replace(/\s+([,.;:])/g, "$1")
     .replace(/(?:\s*[-–—]\s*){2,}/g, " ")
@@ -379,14 +397,17 @@ function textoLimpo(valor) {
     .trim()
 }
 
-function normalizar(produto, marca, marcaId) {
+function normalizar(produto, marca, marcaId, opcoes = {}) {
   const nome = semPrecoDeAtacado(textoLimpo(produto.nome || produto.titulo))
   const custo = precoCusto(produto)
   const imagensProduto = urlsDe(produto.imagens)
   if (!nome || !custo || imagensProduto.length === 0) return null
   if (/^\s*(bolsa|carteira|mochila|necessaire|meia|caixa)\b/i.test(nome)) return null
+  if (opcoes.somenteTenis && !/t[eê]nis/i.test(nome)) return null
 
-  const linha = linhaDo(produto, marcaId, marca)
+  const linha = opcoes.categoria
+    ? { id: slugify(opcoes.categoria) || "tenis-infantil", name: opcoes.categoria }
+    : linhaDo(produto, marcaId, marca)
   if (PULAR.test(linha.name)) return null
   if (linha.name === marca || /^(filtro|calçados|calcados)$/i.test(linha.name)) return null
 
@@ -526,7 +547,13 @@ if (process.env.AURORA_SAMPLE) {
   const amostra = JSON.parse(readFileSync(process.env.AURORA_SAMPLE, "utf8"))
   for (const item of amostra) {
     const marca = MARCAS.find((entry) => entry.marca === item.marca) || MARCAS[0]
-    console.log(JSON.stringify(normalizar(item.produto, marca.marca, marca.id), null, 2))
+    console.log(
+      JSON.stringify(
+        normalizar(item.produto, item.marca || marca.marca, item.marcaId || marca.id, item.opcoes || {}),
+        null,
+        2,
+      ),
+    )
   }
   process.exit(0)
 }
@@ -539,6 +566,19 @@ for (const marca of MARCAS) {
     const id = String(bruto.id)
     if (porId.has(id)) continue
     const produto = normalizar(bruto, marca.marca, marca.id)
+    if (produto) porId.set(id, produto)
+  }
+}
+
+for (const linha of LINHAS_INFANTIS) {
+  const brutos = await marcaCompleta(linha)
+  for (const bruto of brutos) {
+    const id = String(bruto.id)
+    if (porId.has(id)) continue
+    const produto = normalizar(bruto, linha.marca, linha.marcaId, {
+      categoria: "Tênis Infantil",
+      somenteTenis: true,
+    })
     if (produto) porId.set(id, produto)
   }
 }
