@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { ProductCard } from "@/components/product-card"
-import { categories, productHasSize, shoeSizes, type CategoryId } from "@/data/catalog"
+import { categories, categoryName, productHasSize, shoeSizes, type CategoryId } from "@/data/catalog"
 import { brands, products } from "@/lib/loja"
 import { cn } from "cn"
 
@@ -21,9 +21,22 @@ export function Catalog() {
   const router = useRouter()
   const category = params.get("categoria")
   const brand = params.get("marca")
-  const size = shoeSizes.includes(params.get("numero") as (typeof shoeSizes)[number])
-    ? params.get("numero")
-    : null
+  const numeros = useMemo(() => {
+    if (category !== "tenis-infantil") return [...shoeSizes]
+    const presentes = new Set<string>()
+    for (const product of products) {
+      if (product.category !== "tenis-infantil") continue
+      if (brand && product.brand !== brand) continue
+      for (const item of product.sizes) presentes.add(item)
+    }
+    const lista = [...presentes].sort((a, b) => {
+      const inicio = Number.parseInt(a, 10) - Number.parseInt(b, 10)
+      if (inicio !== 0) return inicio
+      return a.localeCompare(b, "pt")
+    })
+    return lista.length > 0 ? lista : [...shoeSizes]
+  }, [category, brand])
+  const size = numeros.includes(params.get("numero") ?? "") ? params.get("numero") : null
   const sort = params.get("ordem") ?? "destaque"
   const query = (params.get("q") ?? "").trim().toLowerCase()
 
@@ -33,7 +46,7 @@ export function Catalog() {
       if (brand && product.brand !== brand) return false
       if (size && !productHasSize(product, size)) return false
       if (query) {
-        const haystack = `${product.name} ${product.brand} ${product.caption}`.toLowerCase()
+        const haystack = `${product.name} ${product.brand} ${product.caption} ${categoryName(product.category)}`.toLowerCase()
         if (!haystack.includes(query)) return false
       }
       return true
@@ -114,7 +127,7 @@ export function Catalog() {
         </div>
         <div className="-mx-4 flex items-center gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
           <span className="shrink-0 text-sm text-muted-foreground">Número</span>
-          {shoeSizes.map((item) => (
+          {numeros.map((item) => (
             <FilterChip
               key={item}
               active={size === item}

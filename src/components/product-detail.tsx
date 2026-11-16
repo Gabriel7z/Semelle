@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { PriceTag } from "@/components/price-tag"
-import { lowStockCount, maxPurchasable, shoeSizes, store, unitsLeft } from "@/data/catalog"
+import { categoryName, lowStockCount, maxPurchasable, shoeSizes, store, unitsLeft } from "@/data/catalog"
 import type { Product } from "@/lib/loja"
 import { formatBRL, installmentLabel, maskCep } from "@/lib/format"
 import { quoteShipping } from "@/lib/shipping"
@@ -41,6 +41,8 @@ export function ProductDetail({ product }: { product: Product }) {
   const [cep, setCep] = useState("")
   const [alertContact, setAlertContact] = useState("")
 
+  const infantil = product.category === "tenis-infantil"
+  const tamanhos = infantil ? product.sizes : shoeSizes
   const color = product.colors.find((item) => item.id === colorId) ?? product.colors[0]
   const images = color?.images ?? []
   const activePhoto = images[Math.min(photo, images.length - 1)] ?? images[0]
@@ -148,7 +150,7 @@ export function ProductDetail({ product }: { product: Product }) {
       <div>
         <p className="text-xs tracking-[0.16em] break-words text-muted-foreground uppercase sm:tracking-[0.2em]">
           <Link href={`/produtos?categoria=${product.category}`} className="hover:text-primary">
-            {product.category}
+            {categoryName(product.category)}
           </Link>
           {" · "}
           {product.brand}
@@ -206,31 +208,38 @@ export function ProductDetail({ product }: { product: Product }) {
                 <DialogHeader>
                   <DialogTitle>Guia de tamanhos</DialogTitle>
                   <DialogDescription>
-                    Medida aproximada do pé. Vizzano e Beira Rio podem variar um
-                    número. Na dúvida, chame no WhatsApp antes de fechar.
+                    {infantil
+                      ? "A numeração infantil muda de um par para o outro. Na dúvida, chame no WhatsApp antes de fechar."
+                      : "Medida aproximada do pé. Vizzano e Beira Rio podem variar um número. Na dúvida, chame no WhatsApp antes de fechar."}
                   </DialogDescription>
                 </DialogHeader>
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b text-left text-muted-foreground">
-                      <th className="py-2 font-medium">Número</th>
-                      <th className="py-2 font-medium">Pé</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sizeChart.map(([number, cm]) => (
-                      <tr key={number} className="border-b border-border/70">
-                        <td className="py-2">{number}</td>
-                        <td className="py-2">{cm}</td>
+                {infantil ? (
+                  <p className="text-sm text-muted-foreground">
+                    Os botões mostram os números deste par. A tabela de 33 a 39 é da numeração adulta.
+                  </p>
+                ) : (
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b text-left text-muted-foreground">
+                        <th className="py-2 font-medium">Número</th>
+                        <th className="py-2 font-medium">Pé</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {sizeChart.map(([number, cm]) => (
+                        <tr key={number} className="border-b border-border/70">
+                          <td className="py-2">{number}</td>
+                          <td className="py-2">{cm}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
               </DialogContent>
             </Dialog>
           </div>
           <div className="mt-2 grid grid-cols-4 gap-2 sm:grid-cols-7">
-            {shoeSizes.map((item) => {
+            {tamanhos.map((item) => {
               const left = color ? unitsLeft(product, color.id, item) : 0
               const selected = size === item
               return (
@@ -255,7 +264,7 @@ export function ProductDetail({ product }: { product: Product }) {
             })}
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
-            Na dúvida entre 36 e 37, chame no{" "}
+            {infantil ? "Na dúvida do número, chame no " : "Na dúvida entre 36 e 37, chame no "}
             <a href={store.whatsapp} target="_blank" rel="noreferrer" className="underline">
               WhatsApp
             </a>{" "}

@@ -19,18 +19,25 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
-import { categories, store } from "@/data/catalog"
+import { categories, categoryName, store } from "@/data/catalog"
 import { products } from "@/lib/loja"
 import { PriceTag } from "@/components/price-tag"
 import { formatBRL } from "@/lib/format"
 import { cn } from "cn"
 
+const infantil = categories.find((category) => category.id === "tenis-infantil")
 const links = [
   { href: "/produtos", label: "Coleção" },
-  ...categories.slice(0, 4).map((category) => ({
-    href: `/produtos?categoria=${category.id}`,
-    label: category.name,
-  })),
+  ...categories
+    .filter((category) => category.id !== "tenis-infantil")
+    .slice(0, 4)
+    .map((category) => ({
+      href: `/produtos?categoria=${category.id}`,
+      label: category.name,
+    })),
+  ...(infantil
+    ? [{ href: `/produtos?categoria=${infantil.id}`, label: infantil.name }]
+    : []),
   { href: "/sobre", label: "A loja" },
   { href: "/contato", label: "Contato" },
 ]
@@ -45,7 +52,7 @@ export function SiteHeader() {
     const term = query.trim().toLowerCase()
     const pool = term
       ? products.filter((product) =>
-          `${product.name} ${product.brand} ${product.category} ${product.caption}`
+          `${product.name} ${product.brand} ${categoryName(product.category)} ${product.caption}`
             .toLowerCase()
             .includes(term),
         )
@@ -115,7 +122,7 @@ export function SiteHeader() {
           </Button>
         </div>
       </div>
-      <nav className="mx-auto hidden max-w-6xl items-center justify-center gap-6 px-6 pb-3 lg:flex">
+      <nav className="mx-auto hidden max-w-6xl flex-wrap items-center justify-center gap-x-6 gap-y-2 px-6 pb-3 lg:flex">
         {links.map((link) => (
           <Link
             key={link.href}
