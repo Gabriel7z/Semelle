@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { ProductCard } from "@/components/product-card"
-import { categories, categoryName, productHasSize, shoeSizes, type CategoryId } from "@/data/catalog"
+import { categories, categoryName, isKidsCategory, kidsCategoryIds, productHasSize, productMatchesCategory, shoeSizes, type CategoryId } from "@/data/catalog"
 import { brands, products } from "@/lib/loja"
 import { cn } from "cn"
 
@@ -22,11 +22,15 @@ export function Catalog() {
   const category = params.get("categoria")
   const brand = params.get("marca")
   const numeros = useMemo(() => {
-    if (category !== "tenis-infantil") return [...shoeSizes]
+    const pool = products.filter((product) => {
+      if (!productMatchesCategory(product.category, category)) return false
+      if (brand && product.brand !== brand) return false
+      return true
+    })
+    const soInfantil = pool.length > 0 && pool.every((product) => isKidsCategory(product.category))
+    if (!isKidsCategory(category) && !soInfantil) return [...shoeSizes]
     const presentes = new Set<string>()
-    for (const product of products) {
-      if (product.category !== "tenis-infantil") continue
-      if (brand && product.brand !== brand) continue
+    for (const product of pool) {
       for (const item of product.sizes) presentes.add(item)
     }
     const lista = [...presentes].sort((a, b) => {
@@ -42,7 +46,7 @@ export function Catalog() {
 
   const visible = useMemo(() => {
     let list = products.filter((product) => {
-      if (category && product.category !== category) return false
+      if (!productMatchesCategory(product.category, category)) return false
       if (brand && product.brand !== brand) return false
       if (size && !productHasSize(product, size)) return false
       if (query) {
@@ -74,7 +78,17 @@ export function Catalog() {
     setShown(pageSize)
   }, [category, brand, size, sort, query])
 
-  const activeCategory = categories.find((item) => item.id === category)
+  const legacyKids = category === kidsCategoryIds.all
+  const kidsCount = products.filter((product) =>
+    productMatchesCategory(product.category, kidsCategoryIds.all),
+  ).length
+  const activeCategory = legacyKids
+    ? {
+        id: kidsCategoryIds.all,
+        name: "Tênis Infantil",
+        blurb: `${kidsCount} pares de tênis infantil na coleção.`,
+      }
+    : categories.find((item) => item.id === category)
   const activeBrand = brands.find((item) => item === brand) ?? null
   const title =
     [activeBrand, activeCategory?.name].filter(Boolean).join(" · ") || "Todos os pares"
@@ -106,7 +120,11 @@ export function Catalog() {
           {categories.map((item) => (
             <FilterChip
               key={item.id}
-              active={category === item.id}
+              active={
+                category === item.id ||
+                (legacyKids &&
+                  (item.id === kidsCategoryIds.menina || item.id === kidsCategoryIds.menino))
+              }
               onClick={() =>
                 update("categoria", category === item.id ? null : (item.id as CategoryId))
               }
@@ -114,7 +132,9 @@ export function Catalog() {
               {item.name}
             </FilterChip>
           ))}
-          <span className="mx-1 hidden h-6 w-px self-center bg-border sm:block" />
+        </div>
+        <div className="-mx-4 flex items-center gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
+          <span className="shrink-0 text-sm text-muted-foreground">Marca</span>
           {brands.map((item) => (
             <FilterChip
               key={item}
