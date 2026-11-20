@@ -16,13 +16,13 @@ const MARCAS = [
 ]
 
 /**
- * Só a subcategoria Tênis. A marca inteira (Molekinha 187619, Molekinho 189351)
- * também traz rasteira, bota, meia e bolsa — isso misturaria com o feminino.
- * `marcaId` é a categoria pai, que é a chave em `produto.categorias`.
+ * Só a subcategoria Tênis. A marca inteira também traz rasteira, bota, meia e bolsa.
+ * A Aurora não manda campo de gênero. A linha é o gênero: Molekinha (187619) é
+ * menina, Molekinho (189351) é menino. `marcaId` é a chave em `produto.categorias`.
  */
 const LINHAS_INFANTIS = [
-  { id: "423275", marca: "Molekinha", marcaId: "187619" },
-  { id: "423290", marca: "Molekinho", marcaId: "189351" },
+  { id: "423275", marca: "Molekinha", marcaId: "187619", categoria: "Tênis Menina" },
+  { id: "423290", marca: "Molekinho", marcaId: "189351", categoria: "Tênis Menino" },
 ]
 
 const PULAR = /^(bolsas?|meias?)$/i
@@ -36,6 +36,7 @@ const IMAGENS_CATEGORIA = {
 }
 
 const CATEGORIAS_DESTAQUE = ["rasteiras", "flatforms", "papetes", "saltos", "tenis", "sapatilhas", "botas"]
+const CATEGORIAS_INFANTIL = ["tenis-menina", "tenis-menino"]
 
 /** Subcategorias do catálogo público, no id que a Aurora manda em `categorias`. */
 const SUB = {
@@ -96,8 +97,8 @@ const SUB = {
   425018: "Sapatilhas",
   423299: "Tamancos",
   423300: "Tênis",
-  423275: "Tênis Infantil",
-  423290: "Tênis Infantil",
+  423275: "Tênis Menina",
+  423290: "Tênis Menino",
 }
 
 const CDN = "https://arquivos.facilzap.app.br"
@@ -576,7 +577,7 @@ for (const linha of LINHAS_INFANTIS) {
     const id = String(bruto.id)
     if (porId.has(id)) continue
     const produto = normalizar(bruto, linha.marca, linha.marcaId, {
-      categoria: "Tênis Infantil",
+      categoria: linha.categoria,
       somenteTenis: true,
     })
     if (produto) porId.set(id, produto)
@@ -590,15 +591,25 @@ const contagem = new Map()
 for (const product of products) {
   contagem.set(product.category, (contagem.get(product.category) || 0) + 1)
 }
+function textoCategoria(id, nome, quantidade) {
+  if (id === "tenis-menina") return `${quantidade} pares de tênis infantil feminino na coleção.`
+  if (id === "tenis-menino") return `${quantidade} pares de tênis infantil masculino na coleção.`
+  return `${quantidade} pares de ${nome.toLowerCase()} na coleção.`
+}
+
+function postoCategoria(id) {
+  const destaque = CATEGORIAS_DESTAQUE.indexOf(id)
+  if (destaque !== -1) return destaque
+  const infantil = CATEGORIAS_INFANTIL.indexOf(id)
+  if (infantil !== -1) return CATEGORIAS_DESTAQUE.length + infantil
+  return 1000
+}
+
 const ordem = [...contagem.entries()]
   .sort((a, b) => {
-    const destaqueA = CATEGORIAS_DESTAQUE.indexOf(a[0])
-    const destaqueB = CATEGORIAS_DESTAQUE.indexOf(b[0])
-    if (destaqueA !== -1 || destaqueB !== -1) {
-      if (destaqueA === -1) return 1
-      if (destaqueB === -1) return -1
-      return destaqueA - destaqueB
-    }
+    const postoA = postoCategoria(a[0])
+    const postoB = postoCategoria(b[0])
+    if (postoA !== postoB) return postoA - postoB
     return b[1] - a[1]
   })
   .map(([id]) => id)
@@ -621,7 +632,7 @@ const categories = ordem.map((id) => {
   return {
     id,
     name: exemplo.categoryName,
-    blurb: `${contagem.get(id)} pares de ${exemplo.categoryName.toLowerCase()} na coleção.`,
+    blurb: textoCategoria(id, exemplo.categoryName, contagem.get(id)),
     image: IMAGENS_CATEGORIA[id] || exemplo.colors[0].images[0],
   }
 })

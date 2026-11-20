@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ProductCard } from "@/components/product-card"
 import { buttonVariants } from "@/components/ui/button"
-import { categories, store } from "@/data/catalog"
+import { categories, kidsCategoryIds, store } from "@/data/catalog"
 import { resolveHeroTiles } from "@/lib/hero-tiles"
 import { products } from "@/lib/loja"
 import { formatBRL } from "@/lib/format"
@@ -44,12 +44,13 @@ export default async function HomePage() {
   const quote = featured[0] ?? products[0]
   const hero = quote?.colors[0]?.images[0] ?? "/products/rasteira-flor.jpg"
   const heroAlt = quote ? productLabel(quote) : "Coleção Use Semelle"
-  const destaque = categories.slice(0, 6)
-  const infantil = categories.find((category) => category.id === "tenis-infantil")
-  const vitrine =
-    infantil && !destaque.some((category) => category.id === infantil.id)
-      ? [...destaque, infantil]
-      : destaque
+  const kidsHome = [kidsCategoryIds.menina, kidsCategoryIds.menino]
+    .map((id) => categories.find((category) => category.id === id))
+    .filter((category) => category != null)
+  const destaque = categories
+    .filter((category) => !kidsHome.some((item) => item.id === category.id))
+    .slice(0, 6)
+  const vitrine = [...destaque, ...kidsHome.filter((item) => !destaque.some((category) => category.id === item.id))]
   const tiles = await resolveHeroTiles()
   const jsonLd = {
     "@context": "https://schema.org",

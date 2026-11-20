@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { PriceTag } from "@/components/price-tag"
-import { categoryName, lowStockCount, maxPurchasable, shoeSizes, store, unitsLeft } from "@/data/catalog"
+import { categoryName, isKidsCategory, lowStockCount, maxPurchasable, shoeSizes, store, unitsLeft } from "@/data/catalog"
 import type { Product } from "@/lib/loja"
 import { formatBRL, installmentLabel, maskCep } from "@/lib/format"
 import { quoteShipping } from "@/lib/shipping"
@@ -41,7 +41,7 @@ export function ProductDetail({ product }: { product: Product }) {
   const [cep, setCep] = useState("")
   const [alertContact, setAlertContact] = useState("")
 
-  const infantil = product.category === "tenis-infantil"
+  const infantil = isKidsCategory(product.category)
   const tamanhos = infantil ? product.sizes : shoeSizes
   const color = product.colors.find((item) => item.id === colorId) ?? product.colors[0]
   const images = color?.images ?? []

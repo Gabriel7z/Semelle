@@ -19,25 +19,28 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
-import { categories, categoryName, store } from "@/data/catalog"
+import { categories, categoryName, kidsCategoryIds, store } from "@/data/catalog"
 import { products } from "@/lib/loja"
 import { PriceTag } from "@/components/price-tag"
 import { formatBRL } from "@/lib/format"
 import { cn } from "cn"
 
-const infantil = categories.find((category) => category.id === "tenis-infantil")
+const kidsNav = [kidsCategoryIds.menina, kidsCategoryIds.menino]
+  .map((id) => categories.find((category) => category.id === id))
+  .filter((category) => category != null)
 const links = [
   { href: "/produtos", label: "Coleção" },
   ...categories
-    .filter((category) => category.id !== "tenis-infantil")
+    .filter((category) => category.id !== kidsCategoryIds.menina && category.id !== kidsCategoryIds.menino)
     .slice(0, 4)
     .map((category) => ({
       href: `/produtos?categoria=${category.id}`,
       label: category.name,
     })),
-  ...(infantil
-    ? [{ href: `/produtos?categoria=${infantil.id}`, label: infantil.name }]
-    : []),
+  ...kidsNav.map((category) => ({
+    href: `/produtos?categoria=${category.id}`,
+    label: category.id === kidsCategoryIds.menina ? "Menina" : "Menino",
+  })),
   { href: "/sobre", label: "A loja" },
   { href: "/contato", label: "Contato" },
 ]

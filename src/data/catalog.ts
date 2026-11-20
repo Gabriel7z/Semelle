@@ -62,6 +62,27 @@ export const products: Product[] = armazenado.products
 
 export const categories = armazenado.categories
 
+/** `tenis-infantil` é o link antigo: mostra menina e menino juntos. */
+export const kidsCategoryIds = {
+  all: "tenis-infantil",
+  menina: "tenis-menina",
+  menino: "tenis-menino",
+} as const
+
+const kidsSplit = [kidsCategoryIds.menina, kidsCategoryIds.menino] as const
+
+export function isKidsCategory(id: string | null | undefined) {
+  return id === kidsCategoryIds.all || id === kidsCategoryIds.menina || id === kidsCategoryIds.menino
+}
+
+export function productMatchesCategory(productCategory: string, selected: string | null) {
+  if (!selected) return true
+  if (selected === kidsCategoryIds.all) {
+    return (kidsSplit as readonly string[]).includes(productCategory) || productCategory === kidsCategoryIds.all
+  }
+  return productCategory === selected
+}
+
 export function getProduct(slug: string) {
   return products.find((product) => product.slug === slug)
 }
